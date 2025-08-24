@@ -1,0 +1,178 @@
+/* Este archivo se utilizará para aplicar estilos a la página HTML. Aquí se definirán las reglas de estilo para los elementos de la página. */
+
+body {
+    background: linear-gradient(135deg, #6ec6ca 0%, #3bb3bd 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Wrapper principal */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    max-width: 800px;
+    width: 100%;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(62, 183, 189, 0.18);
+    overflow: hidden;
+}
+
+/* Panel de bienvenida */
+.login-bienvenida {
+    background: #3bb3bd;
+    color: #fff;
+    width: 340px;
+    min-width: 280px;
+    border-radius: 24px 0 0 24px;
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-bienvenida h1 {
+    font-size: 2.2em;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+.login-bienvenida p {
+    font-size: 1.1em;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.btn-registro {
+    background: #fff;
+    color: #3bb3bd;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #3bb3bd22;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-registro:hover {
+    background: #e0e0e0;
+    color: #222;
+}
+
+/* Panel de formulario */
+.login-formulario {
+    background: #fff;
+    width: 370px;
+    padding: 48px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-formulario h2 {
+    color: #3bb3bd;
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.login-indicacion {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#login-form label {
+    margin-bottom: 4px;
+    font-size: 15px;
+    color: #3bb3bd;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+#login-form input[type="text"],
+#login-form input[type="password"] {
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #bdbdbd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+    background: #f7fafd;
+}
+
+#login-form input:focus {
+    border: 1.5px solid #3bb3bd;
+    box-shadow: 0 0 6px #6ec6ca33;
+}
+
+.recordar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.recordar label {
+    margin-left: 6px;
+    font-size: 14px;
+    color: #555;
+}
+
+.botones {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.botones button {
+    padding: 10px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    background: linear-gradient(90deg, #6ec6ca 0%, #3bb3bd 100%);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 12px #3bb3bd33;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.botones button:hover {
+    background: linear-gradient(90deg, #3bb3bd 0%, #6ec6ca 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px #3bb3bd44;
+}
+
+/* Responsive para móviles */
+@media (max-width: 800px) {
+    .login-wrapper {
+        flex-direction: column;
+        max-width: 95vw;
+        border-radius: 24px;
+    }
+    .login-bienvenida, .login-formulario {
+        width: 100%;
+        border-radius: 24px 24px 0 0;
+        padding: 32px 16px;
+    }
+    .login-formulario {
+        border-radius: 0 0 24px 24px;
+    }
+}

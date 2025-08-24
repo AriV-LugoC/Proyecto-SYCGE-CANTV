@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fb;
+    display: flex;
+    height: 100vh;
+}
+
+.bienvenida {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    margin-bottom: 36px;
+    color: #003366;
+    gap: 18px;
+}
+
+.icon-user-large {
+    color: #6ec6ca;
+}
+
+.resumen {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 36px;
+}
+ 
+.card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    width: 160px;
+    height: 110px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    transition: transform 0.15s;
+}
+
+.card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+}
+
+.card i {
+    font-size: 36px;
+    color: #6ec6ca;
+}
+
+.card-acuerdos i { color: #6ec6ca; }
+.card-reportes i { color: #f7b267; }
+.card-comentarios i { color: #7e57c2; }
+
+.card-num {
+    font-size: 32px;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 2px;
+}
+
+.card-label {
+    font-size: 15px;
+    color: #888;
+}
+
+.mensaje {
+    margin-top: 24px;
+    color: #555;
+    font-size: 17px;
+    background: #e3eafc;
+    padding: 18px 28px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.card-cumplidos {
+    background: #fff;
+    color: #003366;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+.card-cumplidos .fa-check-circle {
+    color: #43e97b;
+    font-size: 36px;
+    margin-right: 12px;
+}
+
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - SYCGE CANTV</title>
+    <link rel="stylesheet" href="css/registro.css">
+    
+</head>
+<body>
+    <div class="registro-wrapper">
+        <div class="registro-bienvenida">
+            <h1>¡Hola!</h1>
+            <p>Regístrate con tus datos personales para utilizar todas las funciones del sitio</p>
+            <button class="btn-login" onclick="window.location.href='/login.html'">Iniciar sesión</button>
+        </div>
+        <div class="registro-formulario">
+            <h2>Registrarse</h2>
+            <p class="registro-indicacion">Usa tu correo electrónico para registrarte</p>
+            <form id="registro-form">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required placeholder="Nombre">
+                <label for="usuario">Email</label>
+                <input type="email" id="usuario" name="usuario" required placeholder="Email">
+                
+                <!-- Departamento -->
+                <label for="departamento">Gerencia General:</label>
+                <select id="departamento" name="departamento" required>
+                    <option value="">Seleccione...</option>
+                    <option value="Gerencia General de Tecnología">Gerencia General de Tecnología</option>
+                    <option value="Gerencia General de Seguimiento y Control">Gerencia General de Seguimiento y Control</option>
+                    <option value="Gerencia General de Proyectos Mayores">Gerencia General de Proyectos Mayores</option>
+                    <option value="Gerencia General de Servicios y Logística">Gerencia General de Servicios y Logística</option>
+                    <option value="Gerencia General de Sistemas">Gerencia General de Sistemas</option>
+                    <option value="Gerencia General de Empresas Privadas">Gerencia General de Empresas Privadas</option>
+                    <option value="Gerencia General de Energía y Climatización">Gerencia General de Energía y Climatización</option>
+                    <option value="Gerencia General de Mercadeo">Gerencia General de Mercadeo</option>
+                    <option value="Gerencia General de Mercados">Gerencia General de Mercados</option>
+                    <option value="Gerencia General de Instituciones Públicas">Gerencia General de Instituciones Públicas</option>
+                    <option value="Gerencia General de Gestión Humana">Gerencia General de Gestión Humana</option>
+                    <option value="Gerencia General de Infraestructura">Gerencia General de Infraestructura</option>
+                    <option value="Gerencia General de Planificación">Gerencia General de Planificación</option>
+                    <option value="Gerencia General de Procura">Gerencia General de Procura</option>
+                    <option value="Gerencia General de Finanzas">Gerencia General de Finanzas</option>
+                    <option value="Gerencia General de Gestión de Flotas">Gerencia General de Gestión de Flotas</option>
+                    <option value="Gerencia General de Operaciones de Telecomunicaciones">Gerencia General de Operaciones de Telecomunicaciones</option>
+                    <option value="Gerencia General de Operaciones Descentralizadas">Gerencia General de Operaciones Descentralizadas</option>
+                </select>
+
+                <!-- Cargo -->
+                <label for="cargo">Cargo:</label>
+                <select id="cargo" name="cargo" required>
+                    <option value="">Seleccione...</option>
+                    <option value="Gerente General">Gerente General</option>
+                    <option value="Supervisor">Supervisor</option>
+                    <option value="Empleado Operativo">Empleado Operativo</option>
+                </select>
+                <!-- Campo de contraseña -->
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" required>
+                <div style="margin-bottom: 8px;">
+                    <input type="checkbox" id="ver-password">
+                    <label for="ver-password" style="font-size:13px; color:#3bb3bd;">Mostrar contraseña</label>
+                </div>
+                <div id="password-strength">
+                    <div id="password-bar"></div>
+                    <span id="password-text"></span>
+                </div>
+                <div class="botones">
+                    <button type="submit">REGISTRARSE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="js/notificaciones.js"></script>
+    <script src="js/inactividad.js"></script>
+    <script src="js/registro.js"></script>
+</body>
+</html>

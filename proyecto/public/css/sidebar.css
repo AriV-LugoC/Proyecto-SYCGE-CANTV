@@ -1,0 +1,236 @@
+/* Sidebar general */
+.sidebar {
+    background: linear-gradient(135deg, #6ec6ca 0%, #3bb3bd 100%);
+    color: #fff;
+    width: 220px;
+    min-width: 60px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s;
+    box-shadow: 0 8px 32px rgba(62, 183, 189, 0.18);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* Sidebar colapsado */
+.sidebar.collapsed {
+    width: 60px;
+}
+
+/* Oculta el texto y el título cuando está colapsado */
+.sidebar.collapsed .sidebar-title,
+.sidebar.collapsed .sidebar-text {
+    display: none !important;
+}
+
+/* Centra el botón del menú cuando está colapsado */
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Opciones del menú colapsado: solo íconos centrados */
+.sidebar.collapsed ul li {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    gap: 0;
+}
+
+/* Íconos más grandes y centrados en modo colapsado */
+.sidebar.collapsed ul li i {
+    font-size: 1.7em;
+    min-width: 0;
+    margin: 0;
+}
+
+/* Espacio arriba y abajo para los íconos */
+.sidebar ul li {
+    height: 48px;
+    align-items: center;
+}
+
+/* El botón de menú siempre visible y centrado */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.7em;
+    cursor: pointer;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+}
+
+/* Opciones del menú */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 32px; /* Espacio grande entre icono y texto */
+    padding: 16px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 8px;
+    margin: 2px 8px;
+}
+
+.sidebar ul li:hover, .sidebar ul li.active {
+    background: #fff;
+    color: #3bb3bd;
+}
+
+.sidebar ul li i {
+    font-size: 1.4em;
+    min-width: 28px;
+    text-align: center;
+}
+
+/* Botón para colapsar/expandir */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.sidebar-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    transition: display 0.3s;
+}
+
+/* Texto de las opciones */
+.sidebar-text {
+    transition: display 0.3s;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 22px 18px 12px 18px;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 220px;
+    padding: 32px;
+    transition: margin-left 0.3s;
+}
+
+/* Sidebar colapsado ajusta el contenido */
+body.sidebar-collapsed .main-content {
+    margin-left: 60px !important;
+}
+
+/* Cuando el sidebar está colapsado */
+.sidebar.collapsed ~ .main-content {
+    margin-left: 60px !important;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 700px) {
+    .main-content, .sidebar.collapsed ~ .main-content {
+        margin-left: 0 !important;
+        padding: 16px;
+    }
+}
+
+
+/* Responsive */
+@media (max-width: 700px) {
+    .sidebar {
+        position: relative;
+        height: auto;
+        width: 100vw;
+        min-width: 0;
+        flex-direction: row;
+        border-radius: 0;
+    }
+    .sidebar.collapsed {
+        width: 60px;
+    }
+    .main-content, .sidebar.collapsed ~ .main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
+}
+
+/* Sidebar estructura vertical */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Lista principal ocupa todo el espacio disponible */
+.sidebar-list {
+    flex: 1 1 auto;
+}
+
+/* Contenedor de los ítems inferiores */
+.sidebar-bottom {
+    margin-bottom: 16px;
+}
+
+.sidebar-bottom ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-bottom ul li {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 16px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 8px;
+    margin: 2px 8px 0 8px; /* Solo 2px arriba, 0px abajo */
+    padding-bottom: 10px;   /* Menos padding abajo */
+}
+
+/* Íconos y texto igual que el resto */
+.sidebar-bottom ul li i {
+    font-size: 1.4em;
+    min-width: 28px;
+    text-align: center;
+}
+
+.sidebar-bottom ul li:hover, .sidebar-bottom ul li.active {
+    background: #fff;
+    color: #3bb3bd;
+}
+
+/* Colapsado: solo íconos */
+.sidebar.collapsed .sidebar-bottom ul li {
+    justify-content: center;
+    gap: 0;
+}
+
+.sidebar.collapsed .sidebar-bottom .sidebar-text {
+    display: none !important;
+}
+
+/* El último botón sin margen inferior extra */
+.sidebar-bottom ul li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}

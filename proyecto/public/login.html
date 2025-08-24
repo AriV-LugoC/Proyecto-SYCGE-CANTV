@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - SYCGE CANTV</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-bienvenida"> 
+            <h1>¡Bienvenido!</h1>
+            <p>Ingrese sus datos personales para utilizar todas las funciones del sitio</p>
+            <button class="btn-registro" onclick="window.location.href='/registro.html'">Registrarse</button>
+        </div>
+        <div class="login-formulario">
+            <h2>Iniciar Sesión</h2>
+            <p class="login-indicacion">Usa tu correo y contraseña</p>
+            <form id="login-form">
+                <label for="usuario">Email</label>
+                <input type="text" id="usuario" name="usuario" required placeholder="Email">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" required placeholder="Contraseña">
+                <div class="recordar">
+                    <input type="checkbox" id="ver-password">
+                    <label for="ver-password">Mostrar contraseña</label>
+                </div>
+                <div class="botones">
+                    <button type="submit" id="iniciar">INICIAR SESIÓN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Mostrar/ocultar contraseña
+        document.getElementById('ver-password').addEventListener('change', function() {
+            const input = document.getElementById('contrasena');
+            input.type = this.checked ? 'text' : 'password';
+        });
+    </script>
+    <script src="js/notificaciones.js"></script>
+    <script src="js/inactividad.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

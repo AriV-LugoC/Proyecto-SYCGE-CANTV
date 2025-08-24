@@ -1,0 +1,750 @@
+@import url('index.css');
+
+body {
+    overflow-x: auto;
+} 
+ 
+.main-content {
+    padding: 48px 60px;
+    flex: 1;
+}
+
+.titulo-acuerdos {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: #003366;
+    margin-bottom: 32px;
+    gap: 32px; /* Espacio entre título e íconos/botón */
+    justify-content: flex-start;
+}
+
+.btn-nuevo-acuerdo {
+    margin-left: 0; /* Elimina el auto para que quede junto al título */
+    background: #7e57c2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-nuevo-acuerdo:hover {
+    background: #5e35b1;
+}
+
+/* Estilos para la tabla de acuerdos */
+.tabla-acuerdos {
+    margin-top: 24px;
+    background: #f8faff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 16px;
+}
+
+.tabla-acuerdos table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+    font-size: 15px;
+}
+
+.tabla-acuerdos th {
+    background: #e3edff;
+    color: #0a2a4d;
+    font-weight: bold;
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 2px solid #cfd8dc;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+.tabla-acuerdos td {
+    background: #fff;
+    padding: 10px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+    font-size: 15px;
+}
+
+.tabla-acuerdos tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-acuerdos th, .tabla-acuerdos td {
+    min-width: 120px;
+}
+
+.tabla-acuerdos th:nth-child(6), .tabla-acuerdos td:nth-child(6) {
+    min-width: 220px; /* Acuerdos/Compromisos más ancho */
+}
+
+.tabla-acuerdos th:nth-child(9), .tabla-acuerdos td:nth-child(9) {
+    min-width: 90px; /* Acciones más pequeño */
+}
+
+.tabla-acuerdos tbody tr:hover td {
+    background: #f1f8ff;
+}
+
+.tabla-acuerdos tr td:first-child {
+    font-weight: bold;
+    color: #1565c0;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.25);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content,
+.modal-card {
+    background: #fff;
+    padding: 36px 36px 28px 36px;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+    width: 680px; /* Más ancho */
+    min-width: 320px;
+    max-width: 720px; /* Permite más espacio */
+    max-height: 90vh; /* No se sale de la pantalla */
+    overflow-y: auto; /* Scroll si es muy alto */
+    position: relative;
+}
+.close {
+    position: absolute;
+    top: 12px; right: 18px;
+    font-size: 22px;
+    color: #888;
+    cursor: pointer;
+}
+.modal-content h3 {
+    margin-top: 0;
+    color: #222;
+    text-align: left;
+    margin-bottom: 18px;
+}
+.modal-content label {
+    margin-top: 6px;
+    margin-bottom: 2px;
+    color: #333;
+    font-size: 15px;
+}
+.modal-content input[type="text"],
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 7px 8px;
+    border: 1px solid #bdbdbd;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-bottom: 4px;
+    background: #f5f5f5;
+}
+.modal-content textarea {
+    min-height: 48px;
+    resize: vertical;
+}
+.btn-crear {
+    background: #7fffd4;
+    color: #222;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 0;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-crear:hover {
+    background: #5ee6c1;
+}
+
+/* New styles for form rows and groups */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-pequeno {
+    width: 320px !important;
+    min-width: 80px;
+    max-width: 160px;
+    display: inline-block;
+}
+
+/* Botón Ver: verde, moderno y circular */
+.btn-ver {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3em;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0f7fa 0%, #b7f0e7 70%);
+    color: #1d927f;
+    box-shadow: 0 2px 8px #43e97b22;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    outline: none;
+    margin: 0 auto;
+    padding: 0;
+}
+.btn-ver:hover {
+    background: linear-gradient(135deg, #b7f0e7 0%, #e0f7fa 100%);
+    box-shadow: 0 2px 8px #43ebcf27;
+    transform: translateY(-2px) scale(1.08);
+    color: #1d927f;
+}
+
+
+
+/* Acciones y botones */
+.acciones-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-comentar, .btn-editar-parcial {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3em;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafd;
+    box-shadow: 0 2px 8px #3bb3bd22;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    outline: none;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.btn-comentar {
+    background: linear-gradient(135deg, #fffde7 0%, #ffe082 100%);
+    color: #ff9800;
+}
+.btn-comentar:hover {
+    background: linear-gradient(135deg, #ffe082 0%, #fffde7 100%);
+    box-shadow: 0 4px 16px #ff980044;
+    transform: translateY(-2px) scale(1.08);
+    color: #e65100;
+}
+
+.btn-editar-parcial {
+    background: linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%);
+    color: #1565c0;
+}
+.btn-editar-parcial:hover {
+    background: linear-gradient(135deg, #b3e5fc 0%, #e3f2fd 100%);
+    box-shadow: 0 4px 16px #2196f344;
+    transform: translateY(-2px) scale(1.08);
+    color: #003366;
+}
+
+/* Colores para el progreso en edición parcial */
+#estado-parcial {
+    font-weight: bold;
+    color: #fff;
+    background-color: #d32f2f; /* Rojo por defecto */
+    transition: background 0.3s;
+}
+#estado-parcial.bg-10 { background-color: #d32f2f; }   /* Rojo */
+#estado-parcial.bg-20 { background-color: #f44336; }
+#estado-parcial.bg-30 { background-color: #ff9800; }
+#estado-parcial.bg-40 { background-color: #ffb300; }
+#estado-parcial.bg-50 { background-color: #ffc107; }
+#estado-parcial.bg-60 { background-color: #cddc39; }
+#estado-parcial.bg-70 { background-color: #8bc34a; }
+#estado-parcial.bg-80 { background-color: #4caf50; }
+#estado-parcial.bg-90 { background-color: #388e3c; }
+#estado-parcial.bg-100 { background-color: #2e7d32; }  /* Verde */
+
+.estado-celda { text-align: center; }
+
+/* Moderno para edición parcial */
+.form-edicion-parcial {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(62, 183, 189, 0.18);
+    padding: 36px 36px 28px 36px;
+    max-width: 420px;
+    margin: 0 auto;
+    color: #3bb3bd;
+}
+
+.form-edicion-parcial h3 {
+    color: #3bb3bd;
+    margin-bottom: 22px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.form-edicion-parcial .form-group {
+    margin-bottom: 22px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-edicion-parcial label {
+    font-weight: 600;
+    color: #3bb3bd;
+    margin-bottom: 8px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+.form-edicion-parcial input[type="text"],
+.form-edicion-parcial select {
+    padding: 12px 16px;
+    border: 2px solid #3bb3bd;
+    border-radius: 8px;
+    background: #f8fafd;
+    color: #222;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #3bb3bd22;
+    margin-bottom: 4px;
+}
+
+.form-edicion-parcial input[type="text"]:focus,
+.form-edicion-parcial select:focus {
+    border-color: #6ec6ca;
+    box-shadow: 0 0 0 2px #3bb3bd44;
+}
+
+.form-edicion-parcial select {
+    background: #fff !important;
+    color: #222 !important;
+}
+
+.form-edicion-parcial select option {
+    color: #222 !important;
+    background: #fff !important;
+    font-size: 15px;
+}
+
+.form-edicion-parcial .botones {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.form-edicion-parcial .btn-guardar-parcial {
+    padding: 12px 36px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    background: linear-gradient(90deg, #6ec6ca 0%, #3bb3bd 100%);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 12px #3bb3bd33;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.form-edicion-parcial .btn-guardar-parcial:hover {
+    background: linear-gradient(90deg, #3bb3bd 0%, #6ec6ca 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px #3bb3bd44;
+}
+
+/* Estilos para la tabla de acuerdos (PDF) */
+.acciones-archivos {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.input-archivo {
+    margin-right: 8px;
+}
+.btn-subir-archivo {
+    background: linear-gradient(90deg, #90caf9 0%, #29b6f6 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px #29b6f622;
+}
+.btn-subir-archivo:hover {
+    background: linear-gradient(90deg, #29b6f6 0%, #90caf9 100%);
+    box-shadow: 0 4px 16px #29b6f644;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Botón Ver Archivos */
+.btn-ver-archivos {
+    background: linear-gradient(90deg, #f69629 0%, #f9d490 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px #29b6f622;
+}
+.btn-ver-archivos:disabled {
+    background: #bdbdbd;
+    color: #fff;
+    cursor: not-allowed;
+}
+.btn-ver-archivos:hover:not(:disabled) {
+    background: linear-gradient(90deg, #f69629 100%, #f9d490 0%);
+    box-shadow: 0 4px 16px #29b6f644;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Botón PDF y Eliminar PDF */
+.btn-pdf, .btn-eliminar-archivo {
+    background: linear-gradient(90deg, #e3f2fd 0%, #90caf9 100%);
+    color: #1565c0;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px #90caf922;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-pdf:hover {
+    background: linear-gradient(90deg, #90caf9 0%, #e3f2fd 100%);
+    color: #003366;
+    box-shadow: 0 4px 16px #90caf944;
+    transform: translateY(-2px) scale(1.05);
+}
+.btn-eliminar-archivo {
+    background: linear-gradient(90deg, #ffcdd2 0%, #e57373 100%);
+    color: #b71c1c;
+}
+.btn-eliminar-archivo:hover {
+    background: linear-gradient(90deg, #e57373 0%, #ffcdd2 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px #e5737344;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.input-archivo[type="file"] {
+    display: none;
+}
+
+.label-archivo {
+    background: linear-gradient(90deg, #29b6f6 0%, #90caf9 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px #29b6f622;
+    display: inline-block;
+}
+.label-archivo:hover {
+    background: linear-gradient(90deg, #90caf9 0%, #29b6f6 100%);
+    box-shadow: 0 4px 16px #29b6f644;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Glassmorphism dos columnas para edición total */
+.glass-fields-2col {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 0;
+}
+.glass-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.glass-group-full {
+    margin-top: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.glass-group-full label {
+    font-size: 1.1em;
+    color: #1565c0;
+    font-weight: 700;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+.glass-group-full textarea {
+    width: 100%;
+    min-height: 70px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 1px 4px #3bb3bd11;
+    padding: 14px 16px;
+    resize: vertical;
+}
+
+/* Modal tipo tarjeta moderna y limpia */
+.modal-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.13);
+    padding: 32px 32px 24px 32px;
+    max-width: 540px;
+    margin: 0 auto;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.modal-icon {
+    font-size: 2em;
+    color: #7e57c2;
+    background: #f3eaff;
+    border-radius: 50%;
+    padding: 12px;
+}
+
+.modal-card h3 {
+    color: #222;
+    margin-bottom: 2px;
+    font-weight: 800;
+    text-align: left;
+    font-size: 1.3em;
+    letter-spacing: 0.5px;
+}
+
+.modal-card .subtitulo {
+    color: #888;
+    font-size: 1em;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+    margin-bottom: 0;
+}
+
+.form-grid-2col .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.form-group label {
+    font-size: 15px;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+.form-group select option {
+    color: #222 !important;
+    background: #fff !important;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    min-height: 48px;
+    resize: vertical;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group textarea:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+/* Los dos últimos campos ocupan toda la fila */
+.form-group-full {
+    grid-column: 1 / span 2;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-full label {
+    font-size: 15px;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group-full input[type="text"],
+.form-group-full textarea {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group-full input[type="text"]:focus,
+.form-group-full textarea:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+.form-group-full textarea {
+    min-height: 60px;
+}
+
+/* Botones */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.btn-cancelar {
+    background: #f5f5f5;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: #e0e0e0;
+}
+
+.btn-violeta {
+    background: linear-gradient(90deg, #7e57c2 0%, #9575cd 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #7e57c222;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-violeta:hover {
+    background: linear-gradient(90deg, #9575cd 0%, #7e57c2 100%);
+    box-shadow: 0 4px 16px #7e57c244;
+}
+
+/* Botón circular morado para abrir modal */
+.btn-editar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dec8ec 0%, #c56de7 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 12px #7e57c244;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+    outline: none;
+    
+}.btn-editar:hover {
+    background: linear-gradient(135deg, #c56de7  0%, #dec8ec 100%);
+    box-shadow: 0 4px 16px #7e57c244;
+    transform: translateY(-2px) scale(1.08);
+    color: #fff;
+}
+
+.btn-abrir-modal-morado i {
+    pointer-events: none;
+}
+.icono-accion {
+    font-size: 20px;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SYCGE CANTV</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar"> 
+    <div class="sidebar-header">
+        <span class="sidebar-title">MENÚ</span>
+        <button id="toggle-sidebar" class="sidebar-toggle">
+            <i id="icon-sidebar" class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+    <ul class="sidebar-list">
+        <li onclick="location.href='index.html'"><i class="fa-solid fa-house"></i> <span class="sidebar-text">INICIO</span></li>
+        <li onclick="location.href='reportes.html'"><i class="fa-solid fa-file-alt"></i> <span class="sidebar-text">REPORTES</span></li>
+        <li onclick="location.href='acuerdos.html'"><i class="fa-solid fa-list-check"></i> <span class="sidebar-text">LISTADO DE ACUERDOS</span></li>
+    </ul>
+    <div class="sidebar-bottom">
+        <ul>
+            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-user"></i> <span class="sidebar-text">PERFIL</span></li>
+            <li onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">SALIR</span></li>
+        </ul>
+    </div>
+</div>
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Ejemplo de bienvenida -->
+        <div class="bienvenida">
+            BIENVENIDO, <span id="nombre-usuario" style="font-weight:bold;"></span>
+        </div>
+
+        <!-- Tarjetas resumen -->
+        <div class="resumen">
+            <div class="card card-acuerdos">
+                <i class="fa-solid fa-list-check"></i>
+                <div>
+                    <div class="card-num" id="num-acuerdos">0</div>
+                    <div class="card-label">Acuerdos</div>
+                </div>
+            </div>
+            <div class="card card-reportes">
+                <i class="fa-solid fa-file-alt"></i>
+                <div>
+                    <div class="card-num" id="num-reportes">0</div>
+                    <div class="card-label">Reportes</div>
+                </div>
+            </div>
+            <div class="card card-cumplidos">
+                <i class="fa-solid fa-check-circle"></i>
+                <div>
+                    <div class="card-num" id="num-culminados">0</div>
+                    <div class="card-label">Culminados</div>
+                </div>
+            </div>
+        </div>
+        <div class="mensaje">
+            ¡Bienvenido al sistema SYCGE CANTV! 
+        </div>
+    </div>
+    <script src="js/notificaciones.js"></script>
+    <script src="js/inactividad.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/sidebar.js"></script>
+</body>
+</html>
