@@ -12,8 +12,8 @@
     <div class="sidebar-header">
         <span class="sidebar-title">MENÚ</span>
         <button id="toggle-sidebar" class="sidebar-toggle">
-            <i id="icon-sidebar" class="fa-solid fa-bars"></i>
-        </button>
+            <i class="fa-solid fa-bars"></i>
+        </button> 
     </div>
     <ul class="sidebar-list">
         <li onclick="location.href='index.html'"><i class="fa-solid fa-house"></i> <span class="sidebar-text">INICIO</span></li>
@@ -22,48 +22,44 @@
     </ul>
     <div class="sidebar-bottom">
         <ul>
-            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-user"></i> <span class="sidebar-text">PERFIL</span></li>
+            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-gear"></i> <span class="sidebar-text">CONFIGURACIÓN</span></li>
             <li onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">SALIR</span></li>
         </ul>
     </div>
 </div>
     <!-- Contenido principal -->
     <div class="main-content">
-        <!-- Ejemplo de bienvenida -->
         <div class="bienvenida">
-            BIENVENIDO, <span id="nombre-usuario" style="font-weight:bold;"></span>
+            <img id="bienvenida-foto" src="img/default-user.png" alt="Foto de perfil" class="bienvenida-foto">
+            <span>BIENVENIDO, <b id="nombre-usuario"></b></span>
         </div>
-
-        <!-- Tarjetas resumen -->
         <div class="resumen">
             <div class="card card-acuerdos">
-                <i class="fa-solid fa-list-check"></i>
+                <i class="fa-solid fa-handshake"></i>
                 <div>
-                    <div class="card-num" id="num-acuerdos">0</div>
+                    <div class="card-num">0</div>
                     <div class="card-label">Acuerdos</div>
                 </div>
             </div>
             <div class="card card-reportes">
                 <i class="fa-solid fa-file-alt"></i>
                 <div>
-                    <div class="card-num" id="num-reportes">0</div>
+                    <div class="card-num">0</div>
                     <div class="card-label">Reportes</div>
                 </div>
             </div>
-            <div class="card card-cumplidos">
-                <i class="fa-solid fa-check-circle"></i>
+            <div class="card card-comentarios">
+                <i class="fa-solid fa-comments"></i>
                 <div>
-                    <div class="card-num" id="num-culminados">0</div>
-                    <div class="card-label">Culminados</div>
+                    <div class="card-num">0</div>
+                    <div class="card-label">Comentarios</div>
                 </div>
             </div>
         </div>
         <div class="mensaje">
-            ¡Bienvenido al sistema SYCGE CANTV! 
+            ¡Bienvenido al sistema SYCGE CANTV! Selecciona una opción del menú para comenzar.
         </div>
     </div>
-    <script src="js/notificaciones.js"></script>
-    <script src="js/inactividad.js"></script>
     <script src="js/index.js"></script>
     <script src="js/sidebar.js"></script>
 </body>

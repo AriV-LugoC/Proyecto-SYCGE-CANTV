@@ -76,16 +76,13 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-.card-cumplidos {
-    background: #fff;
-    color: #003366;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
-}
-.card-cumplidos .fa-check-circle {
-    color: #43e97b;
-    font-size: 36px;
-    margin-right: 12px;
+.bienvenida-foto {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 18px;
+    border: 2px solid #6ec6ca;
 }
 
 
