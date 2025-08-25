@@ -1,13 +1,27 @@
 if (!localStorage.getItem('token')) {
-    window.location.href = '/login.html';
+    window.location.href = '/login.html'; // Redirige al login si no hay token
 }
 
-// Expulsar usuario tras 20 minutos
-const tiempoMaximoSesion = 20 * 60 * 1000;
-setTimeout(() => {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-}, tiempoMaximoSesion);
+const siglasDeptos = {
+    "Gerencia General de Tecnología": "GGT",
+    "Gerencia General de Seguimiento y Control": "GGSC",
+    "Gerencia General de Proyectos Mayores": "GGPM",
+    "Gerencia General de Servicios y Logística": "GGSL",
+    "Gerencia General de Sistemas": "GGSIS",
+    "Gerencia General de Empresas Privadas": "GGEP",
+    "Gerencia General de Energía y Climatización": "GGEC",
+    "Gerencia General de Mercadeo": "GGMER",
+    "Gerencia General de Mercados": "GGMDS",
+    "Gerencia General de Instituciones Públicas": "GGIP",
+    "Gerencia General de Gestión Humana": "GGGH",
+    "Gerencia General de Infraestructura": "GGINF",
+    "Gerencia General de Planificación": "GGPLAN",
+    "Gerencia General de Procura": "GGPROC",
+    "Gerencia General de Finanzas": "GGFIN",
+    "Gerencia General de Gestión de Flotas": "GGGF",
+    "Gerencia General de Operaciones de Telecomunicaciones": "GGOT",
+    "Gerencia General de Operaciones Descentralizadas": "GGOD"
+};
 
 async function cargarReportes() {
     const tbody = document.getElementById('tbody-reportes');
@@ -25,11 +39,15 @@ async function cargarReportes() {
             tbody.innerHTML = '<tr><td colspan="5">No hay acuerdos registrados.</td></tr>';
             return;
         }
+        // Depuración: muestra los valores en consola
+        console.log('Departamento usuario:', departamentoUsuario);
+        acuerdos.forEach(a => console.log('Unidad responsable:', a.unidad_responsable));
+
+        // Filtra por nombre completo (solo una vez)
         acuerdos = acuerdos.filter(a => a.unidad_responsable === departamentoUsuario);
         renderTablaReportes(acuerdos);
     } catch {
         tbody.innerHTML = '<tr><td colspan="5">Error al cargar reportes.</td></tr>';
-        mostrarNotificacion('Error al cargar reportes', 'error');
     }
 }
 
@@ -44,33 +62,11 @@ function renderTablaReportes(acuerdos) {
                 <td>${a.fecha_comite || ''}</td>
                 <td>${a.estado || 'Sin iniciar'}</td>
                 <td>
-                    <button class="btn-ver btn-ver-ficha" data-id="${a._id}" title="Ver acuerdo completo">
-                        <i class="fa fa-eye"></i>
-                    </button>
+                    <button class="btn-ver">Ver</button>
                 </td>
             </tr>
         `;
     });
 }
 
-// Usa la función del modal de acuerdos.js para mostrar el acuerdo completo
-document.addEventListener('click', async function(e) {
-    if (e.target.closest('.btn-ver-ficha')) {
-        const id = e.target.closest('.btn-ver-ficha').getAttribute('data-id');
-        const token = localStorage.getItem('token');
-        const res = await fetch(`/api/acuerdos/${id}`, {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const acuerdo = await res.json();
-        // Llama directamente a la función global de acuerdos.js
-        if (typeof mostrarFichaAcuerdo === 'function') {
-            mostrarFichaAcuerdo(acuerdo);
-        } else {
-            alert('No se encontró la función para mostrar el acuerdo.');
-        }
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    cargarReportes();
-});
+document.addEventListener('DOMContentLoaded', cargarReportes);

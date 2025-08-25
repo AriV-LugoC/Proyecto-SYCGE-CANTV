@@ -76,4 +76,13 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
+.bienvenida-foto {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 18px;
+    border: 2px solid #6ec6ca;
+}
+
 

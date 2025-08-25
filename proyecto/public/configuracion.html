@@ -23,57 +23,35 @@
     </ul>
     <div class="sidebar-bottom">
         <ul>
-            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-user"></i> <span class="sidebar-text">PERFIL</span></li>
+            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-gear"></i> <span class="sidebar-text">CONFIGURACIÓN</span></li>
             <li onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">SALIR</span></li>
         </ul>
     </div>
 </div>
-  <div class="main-content">
-    <div class="configuracion-perfil">
-    <h2 id="nombre">Nombre del Usuario</h2>
-    <form id="form-configuracion" class="form-configuracion">
-        <div class="perfil-header">
-            <div class="perfil-nombre">
-                <!-- Elimina el h2 de aquí -->
-                <span id="cargo" class="perfil-cargo">Cargo</span>
-                <span id="departamento" class="perfil-departamento">Departamento</span>
-            </div>
-        </div>
-        <div class="perfil-datos">
-            <div class="perfil-dato">
-                <span class="dato-label">Correo electrónico</span>
-                <span id="correo" class="dato-value"></span>
-            </div>
-            <div class="perfil-dato perfil-cambiar-password">
-                <span class="dato-label">Cambiar contraseña</span>
-                <div class="password-fields">
-                    <div class="campo-password">
-                        <input type="password" id="contrasena-actual" placeholder="Contraseña actual">
-                        <span class="toggle-password" data-target="contrasena-actual" title="Mostrar contraseña">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                    </div>
-                    <div class="campo-password">
-                        <input type="password" id="nueva-contrasena" placeholder="Nueva contraseña">
-                        <span class="toggle-password" data-target="nueva-contrasena" title="Mostrar contraseña">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                    </div>
-                    <div class="campo-password">
-                        <input type="password" id="confirmar-contrasena" placeholder="Confirmar nueva contraseña">
-                        <span class="toggle-password" data-target="confirmar-contrasena" title="Mostrar contraseña">
-                            <i class="fa fa-eye"></i>
-                        </span>
-                    </div>
+    <div class="main-content">
+        <div class="configuracion-container">
+            <h2>Configuración de Usuario</h2>
+            <!-- Solo el fragmento relevante del formulario -->
+            <form id="form-configuracion" enctype="multipart/form-data">
+                <div class="foto-perfil">
+                    <img id="preview-foto" src="img/default-user.png" alt="Foto de perfil">
+                    <input type="file" id="foto" name="foto" accept="image/*">
+                    <button type="button" id="btn-guardar-foto">Guardar foto</button>
+                    <div id="mensaje-foto" style="color: #2e7d32; margin-top: 8px;"></div>
                 </div>
-            </div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+
+                <label for="contrasena-actual">Contraseña actual</label>
+                <input type="password" id="contrasena-actual" name="contrasena-actual" required>
+
+                <label for="nueva-contrasena">Nueva contraseña</label>
+                <input type="password" id="nueva-contrasena" name="nueva-contrasena">
+
+                <button type="submit">Guardar cambios</button>
+            </form>
         </div>
-        <button type="submit" class="btn-guardar">Guardar cambios</button>
-    </form>
-</div>
-</div>
-    <script src="js/notificaciones.js"></script>
-    <script src="js/inactividad.js"></script>
+    </div>
     <script src="js/configuracion.js"></script>
     <script src="js/sidebar.js"></script>
 </body>

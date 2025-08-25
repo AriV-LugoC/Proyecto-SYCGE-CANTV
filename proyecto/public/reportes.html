@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Reportes - SYCGE CANTV</title>
-    <link rel="stylesheet" href="css/reportes.css">+
-    <link rel="stylesheet" href="css/fichaAcuerdo.css">
+    <link rel="stylesheet" href="css/reportes.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
  <div class="sidebar"> 
-    <div class="sidebar-header"> 
+    <div class="sidebar-header">
         <span class="sidebar-title">MENÚ</span>
         <button id="toggle-sidebar" class="sidebar-toggle">
             <i class="fa-solid fa-bars"></i>
@@ -23,7 +22,7 @@
     </ul>
     <div class="sidebar-bottom">
         <ul>
-            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-user"></i> <span class="sidebar-text">PERFIL</span></li>
+            <li onclick="location.href='configuracion.html'"><i class="fa-solid fa-gear"></i> <span class="sidebar-text">CONFIGURACIÓN</span></li>
             <li onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">SALIR</span></li>
         </ul>
     </div>
@@ -37,8 +36,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th># Control</th>
-                        <th>Acuerdos</th>
+                        <th>ID</th>
+                        <th>Título</th>
                         <th>Fecha</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -50,10 +49,8 @@
             </table>
         </div>
     </div>
-    <script src="js/notificaciones.js"></script>
-    <script src="js/inactividad.js"></script>
+
     <script src="js/reportes.js"></script>
-    <script src="js/fichaAcuerdo.js"></script>
     <script src="js/sidebar.js"></script>
 </body>
 </html>

@@ -1,19 +1,13 @@
 if (!localStorage.getItem('token')) {
-    window.location.href = '/login.html';
+    window.location.href = '/login.html'; // Redirige al login si no hay token
 }
-
-// Expulsar usuario tras 20 minutos
-const tiempoMaximoSesion = 20 * 60 * 1000;
-setTimeout(() => {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-}, tiempoMaximoSesion);
-
 document.addEventListener('DOMContentLoaded', async () => {
     // Mostrar nombre del usuario
     const nombreUsuario = localStorage.getItem('nombre');
     document.getElementById('nombre-usuario').textContent = nombreUsuario || '';
 
+    // Mostrar foto de perfil (si tienes lógica para esto)
+    // document.getElementById('bienvenida-foto').src = ...;
 
     // Obtener token y departamento
     const token = localStorage.getItem('token');
@@ -49,13 +43,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelector('.card-acuerdos .card-num').textContent = totalAcuerdos;
     document.querySelector('.card-reportes .card-num').textContent = totalReportes;
     document.querySelector('.card-comentarios .card-num').textContent = totalComentarios;
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const usuario = localStorage.getItem('usuario');
-    fetch(`/api/usuario?usuario=${encodeURIComponent(usuario)}`)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('nombre-usuario').textContent = data.nombre || '';
-        });
 });
