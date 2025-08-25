@@ -41,14 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const result = await res.json();
                 if (res.ok) {
-                    alert('Acuerdo creado correctamente');
+                    mostrarNotificacion('Acuerdo creado correctamente', 'success');
                     cerrarModalNuevoAcuerdo();
                     cargarAcuerdos();
                 } else {
-                    alert(result.error || 'Error al crear el acuerdo');
+                    mostrarNotificacion(result.error || 'Error al crear el acuerdo', 'error');
                 }
             } catch (err) {
-                alert('Error de conexión con el servidor');
+               mostrarNotificacion('Error de conexión con el servidor', 'error');
             }
         });
     }

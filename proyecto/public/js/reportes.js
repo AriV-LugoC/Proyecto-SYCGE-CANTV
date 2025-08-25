@@ -48,6 +48,7 @@ async function cargarReportes() {
         renderTablaReportes(acuerdos);
     } catch {
         tbody.innerHTML = '<tr><td colspan="5">Error al cargar reportes.</td></tr>';
+        mostrarNotificacion('Error al cargar reportes', 'error');
     }
 }
 

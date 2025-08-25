@@ -21,9 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('usuario', data.usuario);
                 localStorage.setItem('departamento', data.departamento); // <-- ESTA LÍNEA ES CLAVE
                 localStorage.setItem('cargoUsuario', data.cargo);
-                window.location.href = '/index.html';
+                mostrarNotificacion('Sesión iniciada', 'success'); // <-- Notificación aquí
+               setTimeout(() => {
+        window.location.href = '/index.html';
+    }, 1000);
             } else {
-                alert(data.error || 'Usuario o contraseña incorrectos');
+                 mostrarNotificacion(data.error || 'Usuario o contraseña incorrectos', 'error');
             }
         });
     }

@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const tieneEspecial = /[\/\*\-\&\@\+]/.test(contrasena);
 
         if (!tieneLongitud || !tieneNumero || !tieneEspecial) {
-            alert('La contraseña debe tener más de 10 caracteres, incluir al menos un número y uno de estos caracteres especiales: / * - & @ +');
+             mostrarNotificacion('La contraseña debe tener más de 10 caracteres, incluir al menos un número y uno de estos caracteres especiales: / * - & @ +', 'error');
             return;
         }
 
         if (!departamento || !cargo) {
-            alert('Debe seleccionar un departamento y un cargo.');
+            mostrarNotificacion('Debe seleccionar un departamento y un cargo.', 'error');
             return;
         }
 
@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await res.json();
             if (res.ok) {
-                alert('Usuario registrado correctamente');
+                mostrarNotificacion('Usuario registrado correctamente', 'success');
                 window.location.href = 'index.html';
             } else {
-                alert(data.error || 'Error al registrar usuario');
+                mostrarNotificacion(data.error || 'Error al registrar usuario', 'error');
             }
         } catch (err) {
-            alert('Error de conexión con el servidor');
+             mostrarNotificacion('Error de conexión con el servidor', 'error');
         }
     });
 

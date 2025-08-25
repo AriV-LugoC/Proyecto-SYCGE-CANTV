@@ -68,10 +68,10 @@ if (!localStorage.getItem('token')) {
         });
         const data = await res.json();
         if (res.ok) {
-            alert('Cambios guardados correctamente');
+            mostrarNotificacion('Cambios guardados correctamente', 'success');
             window.location.reload();
         } else {
-            alert(data.error || 'Error al guardar cambios');
+            mostrarNotificacion(data.error || 'Error al guardar cambios', 'error');
         }
     });
 });

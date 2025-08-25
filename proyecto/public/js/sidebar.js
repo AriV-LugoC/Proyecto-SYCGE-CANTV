@@ -11,5 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function cerrarSesion() {
     localStorage.clear();
-    window.location.href = 'login.html';
+    mostrarNotificacion('Sesión cerrada', 'success');
+    setTimeout(() => {
+        window.location.href = 'login.html';
+    }, 1000);
 }
