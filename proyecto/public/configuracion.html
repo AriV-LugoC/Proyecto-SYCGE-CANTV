@@ -30,26 +30,42 @@
 </div>
     <div class="main-content">
         <div class="configuracion-container">
-            <h2>Configuración de Usuario</h2>
-            <!-- Solo el fragmento relevante del formulario -->
-            <form id="form-configuracion" enctype="multipart/form-data">
-                <div class="foto-perfil">
-                    <img id="preview-foto" src="img/default-user.png" alt="Foto de perfil">
-                    <input type="file" id="foto" name="foto" accept="image/*">
-                    <button type="button" id="btn-guardar-foto">Guardar foto</button>
-                    <div id="mensaje-foto" style="color: #2e7d32; margin-top: 8px;"></div>
-                </div>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required>
-
-                <label for="contrasena-actual">Contraseña actual</label>
-                <input type="password" id="contrasena-actual" name="contrasena-actual" required>
-
-                <label for="nueva-contrasena">Nueva contraseña</label>
-                <input type="password" id="nueva-contrasena" name="nueva-contrasena">
-
-                <button type="submit">Guardar cambios</button>
-            </form>
+            <div class="configuracion-perfil">
+                <h2>Mi Perfil</h2>
+                <form id="form-configuracion" class="form-configuracion">
+                    <div class="perfil-container">
+                        <div class="perfil-card">
+                            <div class="perfil-header">
+                                <div class="perfil-foto">
+                                    <img id="preview-foto" src="img/default-user.png" alt="Foto de perfil">
+                                    <label class="btn-cambiar-foto">
+                                        <input type="file" id="foto" accept="image/*" style="display:none;">
+                                        Cambiar foto
+                                    </label>
+                                </div>
+                                <div class="perfil-nombre">
+                                    <h2 id="nombre">Nombre del Usuario</h2>
+                                    <span id="cargo" class="perfil-cargo">Cargo</span>
+                                    <span id="departamento" class="perfil-departamento">Departamento</span>
+                                </div>
+                            </div>
+                            <div class="perfil-datos">
+                                <div class="perfil-dato">
+                                    <span class="dato-label">Correo electrónico</span>
+                                    <span id="correo" class="dato-value"></span>
+                                    <button class="btn-editar" id="btn-editar-correo">Modificar</button>
+                                </div>
+                                <div class="perfil-dato">
+                                    <span class="dato-label">Contraseña</span>
+                                    <span class="dato-value">********</span>
+                                    <button class="btn-editar" id="btn-editar-password">Modificar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-guardar">Guardar cambios</button>
+                </form>
+            </div>
         </div>
     </div>
     <script src="js/notificaciones.js"></script>

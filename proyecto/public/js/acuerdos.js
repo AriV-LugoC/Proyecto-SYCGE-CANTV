@@ -1,6 +1,13 @@
 if (!localStorage.getItem('token')) {
-    window.location.href = '/login.html'; // Redirige al login si no hay token
+    window.location.href = '/login.html';
 }
+
+// Expulsar usuario tras 20 minutos
+const tiempoMaximoSesion = 20 * 60 * 1000;
+setTimeout(() => {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+}, tiempoMaximoSesion);
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarAcuerdos();
@@ -185,12 +192,11 @@ document.getElementById('form-editar-parcial').addEventListener('submit', async 
             body: JSON.stringify({ acuerdos, punto_agenda, estado })
         });
         if (res.ok) {
-            mostrarNotificacion('Acuerdo editado correctamente', 'success'); // <-- Agrega aquí
             cerrarModalEditarParcial();
             await cargarAcuerdos(); // Recarga la tabla
-    }   else {
-    mostrarNotificacion('Error al guardar los cambios', 'error'); // <-- Opcional, mejora UX
-}
+        } else {
+            alert('Error al guardar los cambios');
+        }
     } catch {
         alert('Error de conexión');
     }
@@ -307,11 +313,11 @@ function renderTablaAcuerdos(acuerdos) {
                     body: formData
                 });
                 if (res.ok) {
-    mostrarNotificacion('Archivo PDF subido correctamente', 'success');
-    cargarAcuerdos();
-} else {
-    mostrarNotificacion('Error al subir el archivo PDF', 'error');
-}
+                    alert('Archivo subido correctamente');
+                    cargarAcuerdos();
+                } else {
+                    alert('Error al subir el archivo');
+                }
             } catch {
                 alert('Error de conexión');
             }
@@ -426,12 +432,11 @@ document.getElementById('form-comentar').addEventListener('submit', async functi
             body: JSON.stringify({ texto })
         });
         if (res.ok) {
-    document.getElementById('input-comentario').value = '';
-    await cargarComentarios(acuerdoComentariosId);
-    mostrarNotificacion('Comentario enviado', 'success');
-} else {
-    mostrarNotificacion('Error al enviar comentario', 'error');
-}
+            document.getElementById('input-comentario').value = '';
+            await cargarComentarios(acuerdoComentariosId);
+        } else {
+            alert('Error al enviar comentario');
+        }
     } catch {
         alert('Error de conexión');
     }
@@ -469,13 +474,13 @@ function abrirModalArchivos(acuerdo) {
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
-               if (res.ok) {
-    mostrarNotificacion('Archivo eliminado', 'success');
-    cerrarModalArchivos();
-    cargarAcuerdos();
-} else {
-    mostrarNotificacion('Error al eliminar el archivo', 'error');
-}
+                if (res.ok) {
+                    alert('Archivo eliminado');
+                    cerrarModalArchivos();
+                    cargarAcuerdos();
+                } else {
+                    alert('Error al eliminar el archivo');
+                }
             } catch {
                 alert('Error de conexión');
             }
@@ -503,4 +508,5 @@ document.addEventListener('click', async function(e) {
         mostrarFichaAcuerdo(acuerdo);
     }
 });
+
 

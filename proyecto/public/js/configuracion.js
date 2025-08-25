@@ -1,7 +1,15 @@
 if (!localStorage.getItem('token')) {
-    window.location.href = '/login.html'; 
-    // Redirige al login si no hay token
-}document.addEventListener('DOMContentLoaded', () => {
+    window.location.href = '/login.html';
+}
+
+// Expulsar usuario tras 20 minutos
+const tiempoMaximoSesion = 20 * 60 * 1000;
+setTimeout(() => {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+}, tiempoMaximoSesion);
+
+document.addEventListener('DOMContentLoaded', () => {
     const usuario = localStorage.getItem('usuario');
 
     // Cargar datos actuales del usuario

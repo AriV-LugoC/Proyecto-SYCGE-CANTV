@@ -2,6 +2,13 @@ if (!localStorage.getItem('token')) {
     window.location.href = '/login.html';
 }
 
+// Expulsar usuario tras 20 minutos
+const tiempoMaximoSesion = 20 * 60 * 1000;
+setTimeout(() => {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+}, tiempoMaximoSesion);
+
 async function cargarReportes() {
     const tbody = document.getElementById('tbody-reportes');
     tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
