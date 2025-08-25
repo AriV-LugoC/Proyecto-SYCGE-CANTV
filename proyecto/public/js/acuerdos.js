@@ -117,15 +117,17 @@ document.addEventListener('click', function(e) {
 
 // Variable para guardar el id del acuerdo que se está editando
 let acuerdoEditandoId = null;
+let datosOriginalesEdicion = null;
 
 // Abrir modal de edición total y cargar datos
 async function abrirModalEditarAcuerdo(id) {
     acuerdoEditandoId = id;
-    // Mostrar el modal
     document.getElementById('modal-editar-total').style.display = 'flex';
 
-    // Obtener los datos del acuerdo (puedes cambiar la ruta según tu backend)
-    const res = await fetch(`/api/acuerdos/${id}`);
+    const token = localStorage.getItem('token');
+    const res = await fetch(`/api/acuerdos/${id}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
     const acuerdo = await res.json();
 
     // Cargar los datos en el formulario
@@ -139,8 +141,21 @@ async function abrirModalEditarAcuerdo(id) {
     document.getElementById('estado-total').value = acuerdo.estado || '';
     document.getElementById('punto-agenda-total').value = acuerdo.punto_agenda || '';
     document.getElementById('acuerdos-total').value = acuerdo.acuerdos || '';
-}
 
+    // Guarda los datos originales para comparar luego
+    datosOriginalesEdicion = {
+        identificativo: acuerdo.identificativo || '',
+        fecha_comite: acuerdo.fecha_comite ? acuerdo.fecha_comite.split('T')[0] : '',
+        tipo_comite: acuerdo.tipo_comite || '',
+        vicepresidencia: acuerdo.vicepresidencia || '',
+        autoridad: acuerdo.autoridad || '',
+        unidad_seguimiento: acuerdo.unidad_seguimiento || '',
+        unidad_responsable: acuerdo.unidad_responsable || '',
+        estado: acuerdo.estado || '',
+        punto_agenda: acuerdo.punto_agenda || '',
+        acuerdos: acuerdo.acuerdos || ''
+    };
+}
 // Cerrar modal de edición total
 function cerrarModalEditarTotal() {
     document.getElementById('modal-editar-total').style.display = 'none';
@@ -168,11 +183,17 @@ document.getElementById('form-editar-total').addEventListener('submit', async fu
     e.preventDefault();
     if (!acuerdoEditandoId) return;
 
-    // Obtener los datos del formulario
+    const token = localStorage.getItem('token');
+    if (!token) {
+        mostrarNotificacion('No tienes sesión activa', 'error');
+        return;
+    }
+
+    // Obtener los datos actuales del formulario
     const datos = {
         identificativo: document.getElementById('identificativo-total').value,
         fecha_comite: document.getElementById('fecha-comite-total').value,
-        tipo_comite: document.getElementById('tipo_comite-total').value,
+        tipo_comite: document.getElementById('tipo-comite-total').value,
         vicepresidencia: document.getElementById('vicepresidencia-total').value,
         autoridad: document.getElementById('autoridad-total').value,
         unidad_seguimiento: document.getElementById('unidad-seguimiento-total').value,
@@ -182,20 +203,43 @@ document.getElementById('form-editar-total').addEventListener('submit', async fu
         acuerdos: document.getElementById('acuerdos-total').value
     };
 
-    // Enviar los datos al backend (ajusta la ruta según tu API)
+    // Validación básica
+    for (const key in datos) {
+        if (!datos[key]) {
+            mostrarNotificacion('Todos los campos son obligatorios', 'error');
+            return;
+        }
+    }
+
+    // Comparar con los datos originales
+    let hayCambios = false;
+    for (const key in datos) {
+        if (datos[key] !== datosOriginalesEdicion[key]) {
+            hayCambios = true;
+            break;
+        }
+    }
+    if (!hayCambios) {
+        mostrarNotificacion('No se ha modificado ningún campo', 'error');
+        return;
+    }
+
+    // Enviar los datos al backend
     const res = await fetch(`/api/acuerdos/${acuerdoEditandoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
         body: JSON.stringify(datos)
     });
 
     if (res.ok) {
-        // Actualiza la tabla (puedes llamar a tu función de recarga)
-        // cargarAcuerdos();
+        mostrarNotificacion('Acuerdo actualizado correctamente', 'success');
         cerrarModalEditarTotal();
-        alert('Acuerdo actualizado correctamente');
+        await cargarAcuerdos();
     } else {
-        alert('Error al actualizar el acuerdo');
+        mostrarNotificacion('Error al actualizar el acuerdo', 'error');
     }
 });
 

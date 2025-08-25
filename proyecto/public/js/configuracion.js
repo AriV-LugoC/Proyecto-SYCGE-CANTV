@@ -2,73 +2,52 @@ if (!localStorage.getItem('token')) {
     window.location.href = '/login.html';
 }
 
-// Expulsar usuario tras 20 minutos
-const tiempoMaximoSesion = 20 * 60 * 1000;
-setTimeout(() => {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-}, tiempoMaximoSesion);
-
 document.addEventListener('DOMContentLoaded', () => {
     const usuario = localStorage.getItem('usuario');
+    const nombre = localStorage.getItem('nombre');
+    const departamento = localStorage.getItem('departamento');
+    const cargo = localStorage.getItem('cargoUsuario');
 
-    // Cargar datos actuales del usuario
-    fetch(`/api/usuario?usuario=${encodeURIComponent(usuario)}`)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('nombre').value = data.nombre || '';
-            document.getElementById('preview-foto').src = data.foto || 'img/default-user.png';
-        });
+    // Mostrar datos en la vista
+    document.getElementById('nombre').textContent = nombre || '';
+    document.getElementById('departamento').textContent = departamento || '';
+    document.getElementById('cargo').textContent = cargo || '';
+    document.getElementById('correo').textContent = usuario || '';
 
-    // Vista previa de la foto
-    document.getElementById('foto').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                document.getElementById('preview-foto').src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Guardar solo la foto
-    document.getElementById('btn-guardar-foto').addEventListener('click', async function() {
-        const fotoInput = document.getElementById('foto');
-        const mensajeDiv = document.getElementById('mensaje-foto');
-        mensajeDiv.textContent = '';
-        if (!fotoInput.files.length) {
-            mensajeDiv.textContent = 'Seleccione una foto primero';
-            mensajeDiv.style.color = '#c62828';
-            return;
-        }
-        const formData = new FormData();
-        formData.append('usuario', usuario);
-        formData.append('foto', fotoInput.files[0]);
-
-        const res = await fetch('/api/configuracion', {
-            method: 'POST',
-            body: formData
-        });
-        const data = await res.json();
-        if (res.ok) {
-            mensajeDiv.textContent = 'Su foto se ha cambiado exitosamente';
-            mensajeDiv.style.color = '#2e7d32';
-            setTimeout(() => window.location.reload(), 1500);
-        } else {
-            mensajeDiv.textContent = data.error || 'Error al guardar la foto';
-            mensajeDiv.style.color = '#c62828';
-        }
-    });
-
-    // Guardar nombre y contraseña
+    // Guardar cambios (solo contraseña)
     document.getElementById('form-configuracion').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('usuario', usuario);
 
-        // Elimina la foto si no se va a cambiar
-        formData.delete('foto');
+        const contrasenaActual = document.getElementById('contrasena-actual').value.trim();
+        const nuevaContrasena = document.getElementById('nueva-contrasena').value.trim();
+        const confirmarContrasena = document.getElementById('confirmar-contrasena').value.trim();
+
+        // Validaciones
+        if (contrasenaActual || nuevaContrasena || confirmarContrasena) {
+            if (!contrasenaActual || !nuevaContrasena || !confirmarContrasena) {
+                mostrarNotificacion('Completa todos los campos para cambiar la contraseña.', 'error');
+                return;
+            }
+            if (nuevaContrasena !== confirmarContrasena) {
+                mostrarNotificacion('La nueva contraseña y la confirmación no coinciden.', 'error');
+                return;
+            }
+            if (nuevaContrasena.length <= 10 || !/[0-9]/.test(nuevaContrasena) || !/[\/\*\-\&\@\+]/.test(nuevaContrasena)) {
+                mostrarNotificacion('La nueva contraseña debe tener más de 10 caracteres, incluir al menos un número y uno de estos caracteres especiales: / * - & @ +', 'error');
+                return;
+            }
+        } else {
+            mostrarNotificacion('No hay cambios para guardar.', 'error');
+            return;
+        }
+
+        // Enviar datos al backend
+        const formData = new FormData();
+        formData.append('usuario', usuario);
+        if (contrasenaActual && nuevaContrasena) {
+            formData.append('contrasenaActual', contrasenaActual);
+            formData.append('nuevaContrasena', nuevaContrasena);
+        }
 
         const res = await fetch('/api/configuracion', {
             method: 'POST',
@@ -77,9 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (res.ok) {
             mostrarNotificacion('Cambios guardados correctamente', 'success');
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 1200);
         } else {
             mostrarNotificacion(data.error || 'Error al guardar cambios', 'error');
         }
+    });
+});
+
+// Mostrar/ocultar contraseñas con solo el ícono
+document.querySelectorAll('.toggle-password').forEach(span => {
+    span.addEventListener('click', function() {
+        const input = document.getElementById(this.dataset.target);
+        const isVisible = input.type === 'text';
+        input.type = isVisible ? 'password' : 'text';
+        this.classList.toggle('active', !isVisible);
+        // Cambia el ícono de ojo abierto/cerrado si lo deseas:
+        this.querySelector('i').className = isVisible ? 'fa fa-eye' : 'fa fa-eye-slash';
     });
 });

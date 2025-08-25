@@ -31,8 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await res.json();
             if (res.ok) {
-                mostrarNotificacion('Usuario registrado correctamente', 'success');
-                window.location.href = 'index.html';
+                mostrarNotificacion('Usuario registrado correctamente', 'success'); // <-- Notificación aquí
+               setTimeout(() => {
+        window.location.href = '/index.html';
+    }, 1000);
             } else {
                 mostrarNotificacion(data.error || 'Error al registrar usuario', 'error');
             }

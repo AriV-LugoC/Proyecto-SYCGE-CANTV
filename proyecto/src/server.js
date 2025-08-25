@@ -2,29 +2,23 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const multer = require('multer');
 const mongoose = require('mongoose'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const JWT_SECRET = process.env.JWT_SECRET || 'secreto_super_seguro';
 
-// Configuración de multer para subir imágenes
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/img'));
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, 'user_' + Date.now() + ext);
-    }
-});
-const upload = multer({ storage });
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+const multer = require('multer');
+const upload = multer();
+app.use(upload.none());
+
 
 // Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
@@ -141,23 +135,51 @@ app.get('/api/usuario', async (req, res) => {
     try {
         const user = await Usuario.findOne({ usuario });
         if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-        res.json({ nombre: user.nombre, foto: user.foto });
+        res.json({ nombre: user.nombre });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuario' });
     }
 });
 
-app.post('/api/configuracion', upload.single('foto'), async (req, res) => {
-    const { usuario, nombre, contrasena } = req.body;
-    let update = {};
-    if (nombre) update.nombre = nombre;
-    if (contrasena) update.contrasena = contrasena;
-    if (req.file) update.foto = '/img/' + req.file.filename;
+
+
+app.post('/api/configuracion', async (req, res) => {
     try {
-        const user = await Usuario.findOneAndUpdate({ usuario }, update, { new: true });
+        const { usuario, contrasenaActual, nuevaContrasena } = req.body;
+        const user = await Usuario.findOne({ usuario });
         if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-        res.json({ success: true, foto: user.foto });
+
+        // Cambiar contraseña
+        if (contrasenaActual || nuevaContrasena) {
+            if (!contrasenaActual || !nuevaContrasena) {
+                return res.status(400).json({ error: 'Debes completar todos los campos de contraseña.' });
+            }
+            // Validar contraseña actual
+            const esValida = await bcrypt.compare(contrasenaActual, user.contrasena);
+            if (!esValida) {
+                return res.status(400).json({ error: 'La contraseña actual es incorrecta.' });
+            }
+            // Verificar si la nueva contraseña es igual a la actual
+            const esIgual = await bcrypt.compare(nuevaContrasena, user.contrasena);
+            if (esIgual) {
+                return res.status(400).json({ error: 'La nueva contraseña no puede ser igual a la actual.' });
+            }
+            // Validar requisitos de seguridad
+            const tieneLongitud = nuevaContrasena.length > 10;
+            const tieneNumero = /[0-9]/.test(nuevaContrasena);
+            const tieneEspecial = /[\/\*\-\&\@\+]/.test(nuevaContrasena);
+            if (!tieneLongitud || !tieneNumero || !tieneEspecial) {
+                return res.status(400).json({ error: 'La nueva contraseña no cumple con los requisitos de seguridad.' });
+            }
+            // Guardar nueva contraseña cifrada
+            user.contrasena = await bcrypt.hash(nuevaContrasena, 10);
+        }
+
+        // Guardar cambios
+        await user.save();
+        res.json({ success: true });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error al actualizar usuario' });
     }
 });
@@ -232,7 +254,8 @@ app.put('/api/acuerdos/:id', authMiddleware, async (req, res) => {
         acuerdos,
         vicepresidencia,
         unidad_responsable,
-        unidad_seguimiento
+        unidad_seguimiento,
+        estado
     } = req.body;
 
     if (!identificativo || !fecha_comite || !tipo_comite || !autoridad || !punto_agenda || !acuerdos || !vicepresidencia || !unidad_responsable || !unidad_seguimiento) {
@@ -268,7 +291,8 @@ app.put('/api/acuerdos/:id', authMiddleware, async (req, res) => {
                 vicepresidencia,
                 unidad_responsable,
                 unidad_seguimiento,
-                correlativo
+                correlativo,
+                estado
             },
             { new: true }
         );
