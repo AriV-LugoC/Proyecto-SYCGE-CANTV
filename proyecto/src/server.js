@@ -44,8 +44,9 @@ const acuerdoSchema = new mongoose.Schema({
     unidad_responsable: String,
     unidad_seguimiento: String,
     correlativo: Number,
-    archivos: [String], // <--- AGREGA ESTA LÍNEA
+    archivos: [String],
     comentarios: [{ usuario: String, cargo: String, texto: String, fecha: Date }],
+    estado: String, // <--- AGREGA ESTA LÍNEA
     fecha_creacion: { type: Date, default: Date.now }
 });
 const Acuerdo = mongoose.model('Acuerdo', acuerdoSchema);
@@ -64,28 +65,23 @@ const Usuario = mongoose.model('Usuario', usuarioSchema);
 app.use('/uploads/pdfs', express.static(path.join(__dirname, '../uploads/pdfs')));
 
 // --- MIDDLEWARE DE AUTENTICACIÓN JWT ---
-function authMiddleware(req, res, next) {
-    // Solo protege rutas que empiezan por /api y no sean login ni registro
-    if (req.path.startsWith('/api/') && !['/api/login', '/api/registro'].includes(req.path)) {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ error: 'Token requerido' });
-
-        const token = authHeader.split(' ')[1];
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            req.usuario = decoded.usuario;
-            next();
-        } catch (error) {
-            return res.status(401).json({ error: 'Token inválido o expirado' });
-        }
-    } else {
+async function authMiddleware(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return res.status(401).json({ error: 'No token provided' });
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        // Busca el usuario en la base de datos
+        const usuario = await Usuario.findOne({ usuario: decoded.usuario });
+        if (!usuario) return res.status(401).json({ error: 'Usuario no encontrado' });
+        req.usuario = usuario; // Aquí se guarda el usuario completo
         next();
+    } catch (err) {
+        return res.status(401).json({ error: 'Token inválido' });
     }
 }
 
-app.use(authMiddleware);
-
-// --- RUTAS DE USUARIOS ---
+// --- RUTAS DE USUARIOS (PÚBLICAS) ---
 app.post('/api/registro', async (req, res) => {
     const { nombre, usuario, contrasena, departamento, cargo } = req.body;
     if (!nombre || !usuario || !contrasena) {
@@ -166,8 +162,8 @@ app.post('/api/configuracion', upload.single('foto'), async (req, res) => {
     }
 });
 
-// --- RUTAS DE ACUERDOS ---
-app.get('/api/acuerdos', async (req, res) => {
+// --- RUTAS DE ACUERDOS (PROTEGIDAS) ---
+app.get('/api/acuerdos', authMiddleware, async (req, res) => {
     try {
         const acuerdos = await Acuerdo.find().sort({ fecha_creacion: -1 });
         res.json(acuerdos);
@@ -176,7 +172,7 @@ app.get('/api/acuerdos', async (req, res) => {
     }
 });
 
-app.get('/api/acuerdos/:id', async (req, res) => {
+app.get('/api/acuerdos/:id', authMiddleware, async (req, res) => {
     const id = req.params.id;
     try {
         const acuerdo = await Acuerdo.findById(id);
@@ -217,7 +213,7 @@ app.post('/api/acuerdos', authMiddleware, async (req, res) => {
         const id_visible = `${data.identificativo} ${fecha_id}-1.${correlativoStr}`;
 
         // Insertar el nuevo acuerdo
-        const nuevoAcuerdo = new Acuerdo({ ...data, id_visible, correlativo });
+        const nuevoAcuerdo = new Acuerdo({ ...data, id_visible, correlativo, estado: "Sin progreso" });
         await nuevoAcuerdo.save();
         res.status(201).json(nuevoAcuerdo);
     } catch (error) {
@@ -225,7 +221,7 @@ app.post('/api/acuerdos', authMiddleware, async (req, res) => {
     }
 });
 
-app.put('/api/acuerdos/:id', async (req, res) => {
+app.put('/api/acuerdos/:id', authMiddleware, async (req, res) => {
     const id = req.params.id;
     const {
         identificativo,
@@ -282,7 +278,28 @@ app.put('/api/acuerdos/:id', async (req, res) => {
     }
 });
 
-app.delete('/api/acuerdos/:id', async (req, res) => {
+// Ruta para edición parcial (solo supervisores)
+app.put('/api/acuerdos/:id/parcial', authMiddleware, async (req, res) => {
+    if (req.usuario.cargo !== 'Supervisor') {
+        return res.status(403).json({ error: 'No tienes permisos para editar parcialmente.' });
+    }
+    const { acuerdos, punto_agenda, estado } = req.body;
+    try {
+        const acuerdo = await Acuerdo.findById(req.params.id);
+        if (!acuerdo) return res.status(404).json({ error: 'Acuerdo no encontrado' });
+
+        acuerdo.acuerdos = acuerdos;
+        acuerdo.punto_agenda = punto_agenda;
+        acuerdo.estado = estado; // <--- IMPORTANTE
+
+        await acuerdo.save();
+        res.json({ success: true, acuerdo });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al editar parcialmente el acuerdo' });
+    }
+});
+
+app.delete('/api/acuerdos/:id', authMiddleware, async (req, res) => {
     try {
         await Acuerdo.findByIdAndDelete(req.params.id);
         res.json({ success: true });
@@ -306,7 +323,7 @@ const uploadPdf = multer({ storage: storagePdf, fileFilter: (req, file, cb) => {
 }});
 
 // Ruta para subir PDF a un acuerdo
-app.post('/api/acuerdos/:id/archivo', uploadPdf.single('archivo'), async (req, res) => {
+app.post('/api/acuerdos/:id/archivo', authMiddleware, uploadPdf.single('archivo'), async (req, res) => {
     try {
         const acuerdoId = req.params.id;
         const archivoPath = '/uploads/pdfs/' + req.file.filename;
@@ -320,7 +337,7 @@ app.post('/api/acuerdos/:id/archivo', uploadPdf.single('archivo'), async (req, r
     }
 });
 
-app.delete('/api/acuerdos/:id/archivo/:idx', async (req, res) => {
+app.delete('/api/acuerdos/:id/archivo/:idx', authMiddleware, async (req, res) => {
     try {
         const acuerdoId = req.params.id;
         const idx = parseInt(req.params.idx);
@@ -342,17 +359,20 @@ app.delete('/api/acuerdos/:id/archivo/:idx', async (req, res) => {
     }
 });
 
-// --- RUTAS DE COMENTARIOS ---
+// --- RUTAS DE COMENTARIOS (PROTEGIDAS) ---
 app.get('/api/acuerdos/:id/comentarios', authMiddleware, async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'ID de acuerdo inválido' });
+    }
     const acuerdo = await Acuerdo.findById(req.params.id);
-    res.json(acuerdo.comentarios || []);
+    res.json(acuerdo?.comentarios || []);
 });
 
 app.post('/api/acuerdos/:id/comentarios', authMiddleware, async (req, res) => {
     const acuerdo = await Acuerdo.findById(req.params.id);
     if (!acuerdo) return res.status(404).json({ error: 'Acuerdo no encontrado' });
     const usuario = req.usuario.nombre || req.usuario.usuario;
-    const cargo = req.usuario.cargo;
+    const cargo = req.usuario.cargo || '';
     const comentario = {
         usuario,
         cargo,
@@ -362,20 +382,34 @@ app.post('/api/acuerdos/:id/comentarios', authMiddleware, async (req, res) => {
     acuerdo.comentarios = acuerdo.comentarios || [];
     acuerdo.comentarios.push(comentario);
     await acuerdo.save();
-    res.json({ success: true });
+    res.json({ success: true, comentario });
 });
+
+// Al cargar los acuerdos:
+async function cargarAcuerdos() {
+    // ...fetch...
+    window.listaAcuerdos = acuerdos; // Guarda la lista globalmente
+    renderTablaAcuerdos(acuerdos);
+}
+
+// Al abrir el modal de edición parcial:
+async function abrirModalEditarParcial(id) {
+    acuerdoParcialId = id;
+    const acuerdos = window.listaAcuerdos || [];
+    console.log('ID recibido:', id, 'IDs en lista:', acuerdos.map(a => a._id));
+    const acuerdo = acuerdos.find(a => String(a._id) === String(id));
+    if (!acuerdo) {
+        alert('No se encontró el acuerdo');
+        return;
+    }
+    document.getElementById('acuerdos-parcial').value = acuerdo.acuerdos || '';
+    document.getElementById('punto-agenda-parcial').value = acuerdo.punto_agenda || '';
+    document.getElementById('estado-parcial').value = acuerdo.estado || '';
+    actualizarColorProgreso();
+    document.getElementById('modal-editar-parcial').style.display = 'flex';
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
-
-// Redirigir a login si la respuesta es 401 (no autorizado)
-app.use((req, res, next) => {
-    res.on('finish', () => {
-        if (res.statusCode === 401) {
-            res.redirect('/login.html');
-        }
-    });
-    next();
 });
