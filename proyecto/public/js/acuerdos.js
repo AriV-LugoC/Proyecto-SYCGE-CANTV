@@ -128,6 +128,8 @@ async function abrirModalEditarAcuerdo(id) {
     form.unidad_responsable.value = acuerdo.unidad_responsable;
     form.unidad_seguimiento.value = acuerdo.unidad_seguimiento;
 
+    Array.from(form.elements).forEach(el => el.required = false);
+
     abrirModalNuevoAcuerdo();
 }
 
@@ -220,26 +222,6 @@ function renderTablaAcuerdos(acuerdos) {
     tbody.innerHTML = '';
     acuerdos.forEach(a => {
         const archivos = Array.isArray(a.archivos) ? a.archivos : (a.archivo ? [a.archivo] : []);
-        // Extrae el número del estado para la clase de color
-        const estadoNum = (a.estado || '').replace('%','');
-        const estado = a.estado || 'Sin progreso';
-        let estadoColor = '#222'; // Negro por defecto
-        if (estado.includes('%')) {
-            const num = estado.replace('%','');
-            const colores = {
-                '10': '#d32f2f',
-                '20': '#f44336',
-                '30': '#ff9800',
-                '40': '#ffb300',
-                '50': '#ffc107',
-                '60': '#cddc39',
-                '70': '#8bc34a',
-                '80': '#4caf50',
-                '90': '#388e3c',
-                '100': '#2e7d32'
-            };
-            estadoColor = colores[num] || '#222';
-        }
         tbody.innerHTML += `
             <tr>
                 <td>${a.id_visible || ''}</td>
@@ -251,17 +233,33 @@ function renderTablaAcuerdos(acuerdos) {
                 <td>${a.unidad_responsable || ''}</td>
                 <td>${a.vicepresidencia || ''}</td>
                 <td class="estado-celda">
-                    <span style="font-weight:bold; color:${estadoColor};">${estado}</span>
+                    <span style="font-weight:bold; color:${a.estado && a.estado.includes('%') ? {
+                        '10': '#d32f2f',
+                        '20': '#f44336',
+                        '30': '#ff9800',
+                        '40': '#ffb300',
+                        '50': '#ffc107',
+                        '60': '#cddc39',
+                        '70': '#8bc34a',
+                        '80': '#4caf50',
+                        '90': '#388e3c',
+                        '100': '#2e7d32'
+                    }[a.estado.replace('%','')] || '#222' : '#222'};">${a.estado || 'Sin progreso'}</span>
                 </td>
                 <td>
                     <div class="acciones-archivos" data-id="${a._id}">
-                        <input type="file" accept="application/pdf" class="input-archivo" data-id="${a._id}">
+                        <label class="label-archivo" for="archivo-${a._id}">Seleccionar archivo</label>
+                        <input type="file" accept="application/pdf" class="input-archivo" id="archivo-${a._id}" data-id="${a._id}">
+                        <span class="nombre-archivo" style="margin-right:8px;"></span>
                         <button class="btn-subir-archivo" data-id="${a._id}" style="display:none;">Subir Archivo</button>
                         <button class="btn-ver-archivos" data-id="${a._id}" ${archivos.length === 0 ? 'disabled' : ''}>Ver archivos</button>
                     </div>
                 </td>
                 <td>
                     <div class="acciones-botones">
+                        <button class="btn-ver btn-ver-ficha" data-id="${a._id}" title="Ver ficha">
+                            <i class="fa fa-eye"></i>
+                        </button>
                         <button class="btn-comentar" data-id="${a._id}" title="Comentarios">
                             <i class="bi bi-chat-dots"></i>
                         </button>
@@ -279,6 +277,53 @@ function renderTablaAcuerdos(acuerdos) {
                 </td>
             </tr>
         `;
+    });
+
+    // Mostrar botón "Subir Archivo" solo si hay archivo seleccionado
+    document.querySelectorAll('.input-archivo').forEach(input => {
+        input.addEventListener('change', function() {
+            const btnSubir = input.parentElement.querySelector('.btn-subir-archivo');
+            const nombreSpan = input.parentElement.querySelector('.nombre-archivo');
+            btnSubir.style.display = input.files.length > 0 ? 'inline-block' : 'none';
+            nombreSpan.textContent = input.files.length > 0 ? input.files[0].name : '';
+        });
+    });
+
+    // Evento para subir PDF
+    document.querySelectorAll('.btn-subir-archivo').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const id = btn.getAttribute('data-id');
+            const input = btn.parentElement.querySelector('.input-archivo');
+            const file = input.files[0];
+            if (!file) return alert('Selecciona un archivo PDF');
+            const formData = new FormData();
+            formData.append('archivo', file);
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/acuerdos/${id}/archivo`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    body: formData
+                });
+                if (res.ok) {
+                    alert('Archivo subido correctamente');
+                    cargarAcuerdos();
+                } else {
+                    alert('Error al subir el archivo');
+                }
+            } catch {
+                alert('Error de conexión');
+            }
+        });
+    });
+
+    // Evento para abrir el modal
+    document.querySelectorAll('.btn-ver-archivos').forEach(btn => {
+        btn.onclick = function() {
+            const id = btn.getAttribute('data-id');
+            const acuerdo = window.acuerdos.find(a => a._id === id);
+            abrirModalArchivos(acuerdo);
+        };
     });
 
     // Evento para abrir el modal de comentarios
@@ -305,15 +350,6 @@ function renderTablaAcuerdos(acuerdos) {
         };
     });
 }
-
-// Evento para abrir el modal desde la tabla
-document.querySelectorAll('.btn-ver-archivos').forEach(btn => {
-    btn.onclick = function() {
-        const id = btn.getAttribute('data-id');
-        const acuerdo = window.acuerdos.find(a => a._id === id);
-        abrirModalArchivos(acuerdo);
-    };
-});
 
 let acuerdoComentariosId = null;
 let comentariosInterval = null;
@@ -406,12 +442,13 @@ function abrirModalArchivos(acuerdo) {
         lista.innerHTML = '<li>No hay archivos PDF subidos.</li>';
     } else {
         acuerdo.archivos.forEach((pdf, idx) => {
+            const nombreArchivo = pdf.split('/').pop();
             lista.innerHTML += `
                 <li style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
-                    <span>PDF ${idx + 1}</span>
-                    <a href="${pdf}" target="_blank" class="btn-pdf" title="Abrir PDF">📄 Abrir</a>
-                    <a href="${pdf}" download class="btn-pdf" title="Descargar PDF">⬇️ Descargar</a>
-                    <button class="btn-eliminar-archivo" data-id="${acuerdo._id}" data-idx="${idx}" title="Eliminar PDF">🗑️ Eliminar</button>
+                    <span style="font-size:1em; color:#1565c0; font-weight:500;">${nombreArchivo}</span>
+                    <a href="${pdf}" target="_blank" class="btn-pdf" title="Abrir PDF"><i class="fa fa-file-pdf"></i></a>
+                    <a href="${pdf}" download class="btn-pdf" title="Descargar PDF"><i class="fa fa-download"></i></a>
+                    <button class="btn-eliminar-archivo" data-id="${acuerdo._id}" data-idx="${idx}" title="Eliminar PDF"><i class="fa fa-trash"></i></button>
                 </li>
             `;
         });
@@ -447,3 +484,21 @@ function abrirModalArchivos(acuerdo) {
 function cerrarModalArchivos() {
     document.getElementById('modal-archivos').style.display = 'none';
 }
+
+function cerrarModalFichaAcuerdo() {
+    document.getElementById('modal-ficha-acuerdo').style.display = 'none';
+}
+
+// Evento para abrir la ficha
+document.addEventListener('click', async function(e) {
+    if (e.target.closest('.btn-ver-ficha')) {
+        const id = e.target.closest('.btn-ver-ficha').getAttribute('data-id');
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/acuerdos/${id}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const acuerdo = await res.json();
+        mostrarFichaAcuerdo(acuerdo);
+    }
+});
+
