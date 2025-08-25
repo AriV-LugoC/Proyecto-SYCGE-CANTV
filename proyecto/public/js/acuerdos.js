@@ -185,11 +185,12 @@ document.getElementById('form-editar-parcial').addEventListener('submit', async 
             body: JSON.stringify({ acuerdos, punto_agenda, estado })
         });
         if (res.ok) {
+            mostrarNotificacion('Acuerdo editado correctamente', 'success'); // <-- Agrega aquí
             cerrarModalEditarParcial();
             await cargarAcuerdos(); // Recarga la tabla
-        } else {
-            alert('Error al guardar los cambios');
-        }
+    }   else {
+    mostrarNotificacion('Error al guardar los cambios', 'error'); // <-- Opcional, mejora UX
+}
     } catch {
         alert('Error de conexión');
     }
@@ -306,11 +307,11 @@ function renderTablaAcuerdos(acuerdos) {
                     body: formData
                 });
                 if (res.ok) {
-                    alert('Archivo subido correctamente');
-                    cargarAcuerdos();
-                } else {
-                    alert('Error al subir el archivo');
-                }
+    mostrarNotificacion('Archivo PDF subido correctamente', 'success');
+    cargarAcuerdos();
+} else {
+    mostrarNotificacion('Error al subir el archivo PDF', 'error');
+}
             } catch {
                 alert('Error de conexión');
             }
@@ -425,11 +426,12 @@ document.getElementById('form-comentar').addEventListener('submit', async functi
             body: JSON.stringify({ texto })
         });
         if (res.ok) {
-            document.getElementById('input-comentario').value = '';
-            await cargarComentarios(acuerdoComentariosId);
-        } else {
-            alert('Error al enviar comentario');
-        }
+    document.getElementById('input-comentario').value = '';
+    await cargarComentarios(acuerdoComentariosId);
+    mostrarNotificacion('Comentario enviado', 'success');
+} else {
+    mostrarNotificacion('Error al enviar comentario', 'error');
+}
     } catch {
         alert('Error de conexión');
     }
@@ -467,13 +469,13 @@ function abrirModalArchivos(acuerdo) {
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
-                if (res.ok) {
-                    alert('Archivo eliminado');
-                    cerrarModalArchivos();
-                    cargarAcuerdos();
-                } else {
-                    alert('Error al eliminar el archivo');
-                }
+               if (res.ok) {
+    mostrarNotificacion('Archivo eliminado', 'success');
+    cerrarModalArchivos();
+    cargarAcuerdos();
+} else {
+    mostrarNotificacion('Error al eliminar el archivo', 'error');
+}
             } catch {
                 alert('Error de conexión');
             }
