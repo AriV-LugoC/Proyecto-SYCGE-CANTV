@@ -5,7 +5,7 @@ if (!localStorage.getItem('token')) {
 // Expulsar usuario tras 20 minutos
 const tiempoMaximoSesion = 20 * 60 * 1000;
 setTimeout(() => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); 
     window.location.href = '/login.html';
 }, tiempoMaximoSesion);
 
@@ -115,30 +115,89 @@ document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal')) cerrarModalNuevoAcuerdo();
 });
 
+// Variable para guardar el id del acuerdo que se está editando
 let acuerdoEditandoId = null;
 
+// Abrir modal de edición total y cargar datos
 async function abrirModalEditarAcuerdo(id) {
     acuerdoEditandoId = id;
-    // Obtén los datos del acuerdo
+    // Mostrar el modal
+    document.getElementById('modal-editar-total').style.display = 'flex';
+
+    // Obtener los datos del acuerdo (puedes cambiar la ruta según tu backend)
     const res = await fetch(`/api/acuerdos/${id}`);
     const acuerdo = await res.json();
 
-    // Llena el formulario con los datos
-    const form = document.getElementById('form-nuevo-acuerdo');
-    form.identificativo.value = acuerdo.identificativo;
-    form.fecha_comite.value = acuerdo.fecha_comite;
-    form.tipo_comite.value = acuerdo.tipo_comite;
-    form.vicepresidencia.value = acuerdo.vicepresidencia;
-    form.autoridad.value = acuerdo.autoridad;
-    form.punto_agenda.value = acuerdo.punto_agenda;
-    form.acuerdos.value = acuerdo.acuerdos;
-    form.unidad_responsable.value = acuerdo.unidad_responsable;
-    form.unidad_seguimiento.value = acuerdo.unidad_seguimiento;
-
-    Array.from(form.elements).forEach(el => el.required = false);
-
-    abrirModalNuevoAcuerdo();
+    // Cargar los datos en el formulario
+    document.getElementById('identificativo-total').value = acuerdo.identificativo || '';
+    document.getElementById('fecha-comite-total').value = acuerdo.fecha_comite ? acuerdo.fecha_comite.split('T')[0] : '';
+    document.getElementById('tipo-comite-total').value = acuerdo.tipo_comite || '';
+    document.getElementById('vicepresidencia-total').value = acuerdo.vicepresidencia || '';
+    document.getElementById('autoridad-total').value = acuerdo.autoridad || '';
+    document.getElementById('unidad-seguimiento-total').value = acuerdo.unidad_seguimiento || '';
+    document.getElementById('unidad-responsable-total').value = acuerdo.unidad_responsable || '';
+    document.getElementById('estado-total').value = acuerdo.estado || '';
+    document.getElementById('punto-agenda-total').value = acuerdo.punto_agenda || '';
+    document.getElementById('acuerdos-total').value = acuerdo.acuerdos || '';
 }
+
+// Cerrar modal de edición total
+function cerrarModalEditarTotal() {
+    document.getElementById('modal-editar-total').style.display = 'none';
+    acuerdoEditandoId = null;
+    // Opcional: limpiar el formulario
+    document.getElementById('form-editar-total').reset();
+}
+
+// Evento para abrir el modal desde el botón editar
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = btn.getAttribute('data-id');
+            abrirModalEditarAcuerdo(id);
+        });
+    });
+});
+
+// Evento para cerrar el modal con el botón "Cancelar" o la X
+document.getElementById('form-editar-total').addEventListener('reset', cerrarModalEditarTotal);
+document.querySelector('#modal-editar-total .close').addEventListener('click', cerrarModalEditarTotal);
+
+// Guardar cambios del formulario de edición total
+document.getElementById('form-editar-total').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!acuerdoEditandoId) return;
+
+    // Obtener los datos del formulario
+    const datos = {
+        identificativo: document.getElementById('identificativo-total').value,
+        fecha_comite: document.getElementById('fecha-comite-total').value,
+        tipo_comite: document.getElementById('tipo_comite-total').value,
+        vicepresidencia: document.getElementById('vicepresidencia-total').value,
+        autoridad: document.getElementById('autoridad-total').value,
+        unidad_seguimiento: document.getElementById('unidad-seguimiento-total').value,
+        unidad_responsable: document.getElementById('unidad-responsable-total').value,
+        estado: document.getElementById('estado-total').value,
+        punto_agenda: document.getElementById('punto-agenda-total').value,
+        acuerdos: document.getElementById('acuerdos-total').value
+    };
+
+    // Enviar los datos al backend (ajusta la ruta según tu API)
+    const res = await fetch(`/api/acuerdos/${acuerdoEditandoId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    });
+
+    if (res.ok) {
+        // Actualiza la tabla (puedes llamar a tu función de recarga)
+        // cargarAcuerdos();
+        cerrarModalEditarTotal();
+        alert('Acuerdo actualizado correctamente');
+    } else {
+        alert('Error al actualizar el acuerdo');
+    }
+});
 
 let acuerdoParcialId = null;
 
@@ -276,9 +335,9 @@ function renderTablaAcuerdos(acuerdos) {
                             </button>
                         ` : ''}
                         ${cargoUsuario === 'Gerente General' ? `
-                            <button class="btn-editar" data-id="${a._id}" title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </button>
+                          <button class="btn-editar" data-id="${a._id}" title="Editar">
+                                <i class="bi bi-pencil-square icono-accion"></i>
+                          </button>
                         ` : ''}
                     </div>
                 </td>

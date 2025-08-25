@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
- <div class="sidebar"> 
+ <div class="sidebar">  
     <div class="sidebar-header">
         <span class="sidebar-title">MENÚ</span>
         <button id="toggle-sidebar" class="sidebar-toggle">
@@ -171,6 +171,99 @@
           </div>
           <div class="botones">
             <button type="submit" class="btn-guardar-parcial">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal edición total acuerdo -->
+    <div id="modal-editar-total" class="modal" style="display:none;">
+      <div class="modal-content modal-card">
+        <span class="close" onclick="cerrarModalEditarTotal()">&times;</span>
+        <div class="modal-header">
+          <i class="fa-solid fa-file-pen modal-icon"></i>
+          <div>
+            <h3>Editar Acuerdo</h3>
+            <div class="subtitulo">Modifica los datos necesarios</div>
+          </div>
+        </div>
+        <form id="form-editar-total">
+          <div class="form-grid-2col">
+            <div class="form-group">
+              <label for="identificativo-total">Identificativo</label>
+              <select id="identificativo-total" name="identificativo">
+                <option value="">(Sin cambios)</option>
+                <option value="CTS">CTS</option>
+                <option value="CTR">CTR</option>
+                <option value="CTO">CTO</option>
+                <option value="CP400">CP400</option>
+                <option value="CEE">CEE</option>
+                <option value="CE">CE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="fecha-comite-total">Fecha de Comité</label>
+              <input type="date" id="fecha-comite-total" name="fecha_comite" placeholder="Selecciona la fecha">
+            </div>
+            <div class="form-group">
+              <label for="tipo-comite-total">Tipo de Comité</label>
+              <select id="tipo-comite-total" name="tipo_comite">
+                <option value="">(Sin cambios)</option>
+                <option value="Ejecutivo">Ejecutivo</option>
+                <option value="Operaciones">Operaciones</option>
+                <option value="p400">P400</option>
+                <option value="Redes">Redes</option>
+                <option value="Servicios">Servicios</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="vicepresidencia-total">Vicepresidencia</label>
+              <input type="text" id="vicepresidencia-total" name="vicepresidencia" placeholder="Vicepresidencia">
+            </div>
+            <div class="form-group">
+              <label for="autoridad-total">Autoridad Solicitante</label>
+              <input type="text" id="autoridad-total" name="autoridad" placeholder="Autoridad Solicitante">
+            </div>
+            <div class="form-group">
+              <label for="unidad-seguimiento-total">Unidad de seguimiento</label>
+              <input type="text" id="unidad-seguimiento-total" name="unidad_seguimiento" placeholder="Unidad de seguimiento">
+            </div>
+            <div class="form-group">
+              <label for="unidad-responsable-total">Unidad Responsable</label>
+              <select id="unidad-responsable-total" name="unidad_responsable">
+                <option value="">(Sin cambios)</option>
+                <!-- ...opciones... -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="estado-total">Estado/Progreso</label>
+              <select id="estado-total" name="estado">
+                <option value="">(Sin cambios)</option>
+                <option value="10%">10%</option>
+                <option value="20%">20%</option>
+                <option value="30%">30%</option>
+                <option value="40%">40%</option>
+                <option value="50%">50%</option>
+                <option value="60%">60%</option>
+                <option value="70%">70%</option>
+                <option value="80%">80%</option>
+                <option value="90%">90%</option>
+                <option value="100%">100%</option>
+              </select>
+            </div>
+            <!-- Los dos últimos campos ocupan toda la fila -->
+            <div class="form-group-full">
+              <label for="punto-agenda-total">Punto de Agenda</label>
+              <input type="text" id="punto-agenda-total" name="punto_agenda" placeholder="Punto de Agenda">
+            </div>
+            <div class="form-group-full">
+              <label for="acuerdos-total">Acuerdos/Compromisos</label>
+              <textarea id="acuerdos-total" name="acuerdos" placeholder="Acuerdos/Compromisos"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalEditarTotal()">Cancelar</button>
+            <button type="submit" class="btn-violeta">Guardar Cambios</button>
           </div>
         </form>
       </div>

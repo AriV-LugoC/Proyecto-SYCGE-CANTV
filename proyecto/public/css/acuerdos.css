@@ -3,7 +3,7 @@
 body {
     overflow-x: auto;
 } 
-
+ 
 .main-content {
     padding: 48px 60px;
     flex: 1;
@@ -108,15 +108,18 @@ body {
     justify-content: center;
     align-items: center;
 }
-.modal-content {
+.modal-content,
+.modal-card {
     background: #fff;
-    padding: 36px 36px 28px 36px; /* Espacio uniforme */
+    padding: 36px 36px 28px 36px;
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.13);
-    width: 440px;
-    position: relative;
+    width: 680px; /* Más ancho */
     min-width: 320px;
-    max-width: 480px;
+    max-width: 720px; /* Permite más espacio */
+    max-height: 90vh; /* No se sale de la pantalla */
+    overflow-y: auto; /* Scroll si es muy alto */
+    position: relative;
 }
 .close {
     position: absolute;
@@ -214,24 +217,7 @@ body {
     color: #1d927f;
 }
 
-/* Botón Editar: naranja, moderno */
-.btn-editar {
-    background: #ffb347;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 16px;
-    font-size: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px #ffb34722;
-    transition: background 0.2s;
-}
-.btn-editar:hover {
-    background: #ff9800;
-}
+
 
 /* Acciones y botones */
 .acciones-botones {
@@ -501,4 +487,264 @@ body {
     background: linear-gradient(90deg, #90caf9 0%, #29b6f6 100%);
     box-shadow: 0 4px 16px #29b6f644;
     transform: translateY(-2px) scale(1.05);
+}
+
+/* Glassmorphism dos columnas para edición total */
+.glass-fields-2col {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 0;
+}
+.glass-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.glass-group-full {
+    margin-top: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.glass-group-full label {
+    font-size: 1.1em;
+    color: #1565c0;
+    font-weight: 700;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+.glass-group-full textarea {
+    width: 100%;
+    min-height: 70px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 1px 4px #3bb3bd11;
+    padding: 14px 16px;
+    resize: vertical;
+}
+
+/* Modal tipo tarjeta moderna y limpia */
+.modal-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.13);
+    padding: 32px 32px 24px 32px;
+    max-width: 540px;
+    margin: 0 auto;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.modal-icon {
+    font-size: 2em;
+    color: #7e57c2;
+    background: #f3eaff;
+    border-radius: 50%;
+    padding: 12px;
+}
+
+.modal-card h3 {
+    color: #222;
+    margin-bottom: 2px;
+    font-weight: 800;
+    text-align: left;
+    font-size: 1.3em;
+    letter-spacing: 0.5px;
+}
+
+.modal-card .subtitulo {
+    color: #888;
+    font-size: 1em;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+    margin-bottom: 0;
+}
+
+.form-grid-2col .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.form-group label {
+    font-size: 15px;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+.form-group select option {
+    color: #222 !important;
+    background: #fff !important;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    min-height: 48px;
+    resize: vertical;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group textarea:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+/* Los dos últimos campos ocupan toda la fila */
+.form-group-full {
+    grid-column: 1 / span 2;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-full label {
+    font-size: 15px;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group-full input[type="text"],
+.form-group-full textarea {
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #222;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group-full input[type="text"]:focus,
+.form-group-full textarea:focus {
+    background: #fff;
+    border-color: #7e57c2;
+}
+
+.form-group-full textarea {
+    min-height: 60px;
+}
+
+/* Botones */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.btn-cancelar {
+    background: #f5f5f5;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: #e0e0e0;
+}
+
+.btn-violeta {
+    background: linear-gradient(90deg, #7e57c2 0%, #9575cd 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #7e57c222;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-violeta:hover {
+    background: linear-gradient(90deg, #9575cd 0%, #7e57c2 100%);
+    box-shadow: 0 4px 16px #7e57c244;
+}
+
+/* Botón circular morado para abrir modal */
+.btn-editar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dec8ec 0%, #c56de7 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 12px #7e57c244;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+    outline: none;
+    
+}.btn-editar:hover {
+    background: linear-gradient(135deg, #c56de7  0%, #dec8ec 100%);
+    box-shadow: 0 4px 16px #7e57c244;
+    transform: translateY(-2px) scale(1.08);
+    color: #fff;
+}
+
+.btn-abrir-modal-morado i {
+    pointer-events: none;
+}
+.icono-accion {
+    font-size: 20px;
 }
