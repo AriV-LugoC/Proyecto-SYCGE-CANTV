@@ -133,45 +133,60 @@ async function abrirModalEditarAcuerdo(id) {
 
 let acuerdoParcialId = null;
 
-function abrirModalEditarParcial(id) {
+// Abre el modal y carga los datos del acuerdo
+async function abrirModalEditarParcial(id) {
     acuerdoParcialId = id;
-    fetch(`/api/acuerdos/${id}`)
-        .then(res => res.json())
-        .then(acuerdo => {
-            document.getElementById('estado').value = acuerdo.estado || '';
-            document.getElementById('acuerdos').value = acuerdo.acuerdos || '';
-            document.getElementById('punto_agenda').value = acuerdo.punto_agenda || '';
-            document.getElementById('modal-editar-parcial').style.display = 'flex';
-        });
+    // Siempre deja los campos vacíos
+    document.getElementById('acuerdos-parcial').value = '';
+    document.getElementById('punto-agenda-parcial').value = '';
+    document.getElementById('estado-parcial').value = '';
+    actualizarColorProgreso();
+    document.getElementById('modal-editar-parcial').style.display = 'flex';
 }
 
+// Cierra el modal
 function cerrarModalEditarParcial() {
     document.getElementById('modal-editar-parcial').style.display = 'none';
+    acuerdoParcialId = null;
 }
 
+// Cambia el color del select según el progreso
+function actualizarColorProgreso() {
+    const select = document.getElementById('estado-parcial');
+    select.className = '';
+    const valor = select.value.replace('%','');
+    if (valor) {
+        select.classList.add('bg-' + valor);
+    }
+}
+
+// Guardar cambios (submit del formulario)
 document.getElementById('form-editar-parcial').addEventListener('submit', async function(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    const data = {
-        estado: document.getElementById('estado').value,
-        acuerdos: document.getElementById('acuerdos').value,
-        punto_agenda: document.getElementById('punto_agenda').value
-    };
+    const acuerdos = document.getElementById('acuerdos-parcial').value.trim();
+    const punto_agenda = document.getElementById('punto-agenda-parcial').value.trim();
+    const estado = document.getElementById('estado-parcial').value;
+
+    if (!acuerdoParcialId) {
+        alert('Error interno: ID de acuerdo inválido');
+        return;
+    }
+
     try {
-        const res = await fetch(`/api/acuerdos/${acuerdoParcialId}`, {
+        const res = await fetch(`/api/acuerdos/${acuerdoParcialId}/parcial`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ acuerdos, punto_agenda, estado })
         });
         if (res.ok) {
-            alert('Acuerdo actualizado');
             cerrarModalEditarParcial();
-            cargarAcuerdos();
+            await cargarAcuerdos(); // Recarga la tabla
         } else {
-            alert('Error al actualizar');
+            alert('Error al guardar los cambios');
         }
     } catch {
         alert('Error de conexión');
@@ -205,6 +220,26 @@ function renderTablaAcuerdos(acuerdos) {
     tbody.innerHTML = '';
     acuerdos.forEach(a => {
         const archivos = Array.isArray(a.archivos) ? a.archivos : (a.archivo ? [a.archivo] : []);
+        // Extrae el número del estado para la clase de color
+        const estadoNum = (a.estado || '').replace('%','');
+        const estado = a.estado || 'Sin progreso';
+        let estadoColor = '#222'; // Negro por defecto
+        if (estado.includes('%')) {
+            const num = estado.replace('%','');
+            const colores = {
+                '10': '#d32f2f',
+                '20': '#f44336',
+                '30': '#ff9800',
+                '40': '#ffb300',
+                '50': '#ffc107',
+                '60': '#cddc39',
+                '70': '#8bc34a',
+                '80': '#4caf50',
+                '90': '#388e3c',
+                '100': '#2e7d32'
+            };
+            estadoColor = colores[num] || '#222';
+        }
         tbody.innerHTML += `
             <tr>
                 <td>${a.id_visible || ''}</td>
@@ -215,7 +250,9 @@ function renderTablaAcuerdos(acuerdos) {
                 <td>${a.acuerdos || ''}</td>
                 <td>${a.unidad_responsable || ''}</td>
                 <td>${a.vicepresidencia || ''}</td>
-                <td>${a.estado || 'Sin iniciar'}</td>
+                <td class="estado-celda">
+                    <span style="font-weight:bold; color:${estadoColor};">${estado}</span>
+                </td>
                 <td>
                     <div class="acciones-archivos" data-id="${a._id}">
                         <input type="file" accept="application/pdf" class="input-archivo" data-id="${a._id}">
@@ -224,73 +261,47 @@ function renderTablaAcuerdos(acuerdos) {
                     </div>
                 </td>
                 <td>
-                    <button class="btn-comentar-chat" data-id="${a._id}">💬 Comentarios</button>
-                    ${cargoUsuario === 'Empleado Operativo' ? `
-                        <button class="btn-comentar" data-id="${a._id}">Comentar</button>
-                    ` : ''}
-                    ${cargoUsuario === 'Supervisor' ? `
-                        <button class="btn-editar-parcial" data-id="${a._id}">✏️ Editar parcial</button>
-                        <button class="btn-ver-comentarios" data-id="${a._id}">👁️ Ver comentarios</button>
-                    ` : ''}
-                    ${cargoUsuario === 'Gerente General' ? `
-                        <button class="btn-editar" data-id="${a._id}">📝 Editar</button>
-                        <button class="btn-ver-comentarios" data-id="${a._id}">👁️ Ver comentarios</button>
-                    ` : ''}
+                    <div class="acciones-botones">
+                        <button class="btn-comentar" data-id="${a._id}" title="Comentarios">
+                            <i class="bi bi-chat-dots"></i>
+                        </button>
+                        ${cargoUsuario === 'Supervisor' ? `
+                            <button class="btn-editar-parcial" data-id="${a._id}" title="Editar parcial">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        ` : ''}
+                        ${cargoUsuario === 'Gerente General' ? `
+                            <button class="btn-editar" data-id="${a._id}" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        ` : ''}
+                    </div>
                 </td>
             </tr>
         `;
     });
 
-    // Mostrar botón "Subir Archivo" solo si hay archivo seleccionado
-    document.querySelectorAll('.input-archivo').forEach(input => {
-        input.addEventListener('change', function() {
-            const btnSubir = input.parentElement.querySelector('.btn-subir-archivo');
-            btnSubir.style.display = input.files.length > 0 ? 'inline-block' : 'none';
-        });
-    });
-
-    // Evento para subir PDF
-    document.querySelectorAll('.btn-subir-archivo').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const id = btn.getAttribute('data-id');
-            const input = btn.parentElement.querySelector('.input-archivo');
-            const file = input.files[0];
-            if (!file) return alert('Selecciona un archivo PDF');
-            const formData = new FormData();
-            formData.append('archivo', file);
-            const token = localStorage.getItem('token');
-            try {
-                const res = await fetch(`/api/acuerdos/${id}/archivo`, {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + token },
-                    body: formData
-                });
-                if (res.ok) {
-                    alert('Archivo subido correctamente');
-                    cargarAcuerdos();
-                } else {
-                    alert('Error al subir el archivo');
-                }
-            } catch {
-                alert('Error de conexión');
-            }
-        });
-    });
-
-    // Evento para abrir el modal
-    document.querySelectorAll('.btn-ver-archivos').forEach(btn => {
-        btn.onclick = function() {
-            const id = btn.getAttribute('data-id');
-            const acuerdo = window.acuerdos.find(a => a._id === id);
-            abrirModalArchivos(acuerdo);
-        };
-    });
-
     // Evento para abrir el modal de comentarios
-    document.querySelectorAll('.btn-comentar-chat').forEach(btn => {
+    document.querySelectorAll('.btn-comentar').forEach(btn => {
         btn.onclick = function() {
             const id = btn.getAttribute('data-id');
             abrirModalComentarios(id);
+        };
+    });
+
+    // Evento para editar parcial (solo supervisores)
+    document.querySelectorAll('.btn-editar-parcial').forEach(btn => {
+        btn.onclick = function() {
+            const id = btn.getAttribute('data-id');
+            abrirModalEditarParcial(id);
+        };
+    });
+
+    // Evento para editar total (solo gerentes)
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.onclick = function() {
+            const id = btn.getAttribute('data-id');
+            abrirModalEditarAcuerdo(id);
         };
     });
 }
@@ -332,9 +343,15 @@ async function cargarComentarios(id) {
         const res = await fetch(`/api/acuerdos/${id}/comentarios`, {
             headers: { 'Authorization': 'Bearer ' + token }
         });
+        if (!res.ok) {
+            console.error('Error al cargar comentarios:', res.status);
+            document.getElementById('chat-comentarios').innerHTML = '<div>Error al cargar comentarios.</div>';
+            return;
+        }
         const comentarios = await res.json();
         mostrarComentarios(comentarios);
-    } catch {
+    } catch (err) {
+        console.error('Error de red al cargar comentarios:', err);
         document.getElementById('chat-comentarios').innerHTML = '<div>Error al cargar comentarios.</div>';
     }
 }
@@ -429,16 +446,4 @@ function abrirModalArchivos(acuerdo) {
 
 function cerrarModalArchivos() {
     document.getElementById('modal-archivos').style.display = 'none';
-}
-
-// Oculta el botón de agregar si es empleado operativo
-const cargoUsuario = localStorage.getItem('cargoUsuario');
-if (cargoUsuario === 'Empleado Operativo') {
-    const btnNuevoAcuerdo = document.getElementById('btn-nuevo-acuerdo');
-    if (btnNuevoAcuerdo) btnNuevoAcuerdo.style.display = 'none';
-}
-
-if (cargoUsuario === 'Empleado') {
-    const btnNuevoAcuerdo = document.getElementById('btn-nuevo-acuerdo');
-    if (btnNuevoAcuerdo) btnNuevoAcuerdo.style.display = 'none';
 }
